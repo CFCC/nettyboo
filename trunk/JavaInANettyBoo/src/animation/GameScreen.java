@@ -6,13 +6,14 @@ import java.awt.*;
 
 public class GameScreen extends JFrame {
     
-    public int width;
-    //the width of the game window
-    public int height;
-    //the height of the game window
-    public Color background;
-    //controls the color of the background of the GameScreen
-    public List <Ball> balls;
+    private int width;
+    private int height;
+    private Color background;
+    private List <Ball> balls;
+
+    public List<Ball> getBalls() {
+        return balls;
+    }
 
     public JPanel screen;
 
@@ -32,7 +33,7 @@ public class GameScreen extends JFrame {
     }
 
     //the list of balls on screen, each ball is assigned a specific number
-    public void addBall(){}
+    public void addBall(Ball ball){}
     public static void main(String[] args) {
         GameScreen gameScreen = new GameScreen();
         gameScreen.setSize(1280,800);

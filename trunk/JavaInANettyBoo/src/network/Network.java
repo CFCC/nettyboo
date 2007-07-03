@@ -22,6 +22,7 @@ public class Network{
     ServerSocket serverListeningSocket;
 
     public Network() {
+        this.server();
         Scanner keyboard = new Scanner(System.in);
         System.out.println("Left computer IP?");
         this.leftIP = keyboard.next();
@@ -71,7 +72,6 @@ public class Network{
         } else {
             System.out.println("No right screen.");
         }
-        this.server();
     }
 
     void server() {
