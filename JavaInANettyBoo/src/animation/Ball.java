@@ -3,13 +3,13 @@ package animation;
 import java.awt.*;
 
 public class Ball {
-    Point coordinate;
+    public Point coordinate;
     //the coordinate(s) that the ball occupies
-    Point speed;
+    public Point speed;
     //how fast the ball moves relative to how fast the ball's points change
-    Color color;
+    public Color color;
     //the color of the ball
-    int radius;
+    public int radius;
     //the radius(half diameter) of the ball
 
 }
