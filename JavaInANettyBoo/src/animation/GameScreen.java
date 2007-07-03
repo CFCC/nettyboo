@@ -14,16 +14,18 @@ public class GameScreen extends JFrame {
     //controls the color of the background of the GameScreen
     public List <Ball> balls;
 
-    public JPanel screen = new JPanel() {
-        protected void paintComponent(Graphics gg) {
-            super.paintComponent(gg);
+    public JPanel screen;
 
-            Graphics2D g = (Graphics2D) gg;
+    {
+        screen = new JPanel() {
+            protected void paintComponent(Graphics gg) {
+                super.paintComponent(gg);
 
-            // draw the screen
-            
-        }
-    };
+                Graphics2D g = (Graphics2D) gg;
+
+            }
+        };
+    }
 
     public GameScreen() {
         add(screen);
