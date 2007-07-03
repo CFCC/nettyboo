@@ -10,6 +10,6 @@ public class Ball {
     public Color color;
     //the color of the ball
     public int radius;
-    //the radius(half diameter) of the ball
+    //the radius(half of the diameter) of the ball
 
 }
