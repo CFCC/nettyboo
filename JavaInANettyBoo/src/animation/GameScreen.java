@@ -21,14 +21,7 @@ public class GameScreen extends JFrame {
             Graphics2D g = (Graphics2D) gg;
 
             // draw the screen
-            g.setColor(Color.green);
-            g.setStroke(new BasicStroke(30));
-            g.drawOval(400,500,250,200);
-            g.setColor(Color.blue);
-            g.drawOval(350,200,200,250);
-            g.setColor(Color.blue);
-            g.fillOval(500,400,250,200);
-            g.fillOval(500,400,200,250);
+            
         }
     };
 
