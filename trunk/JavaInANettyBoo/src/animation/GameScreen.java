@@ -1,7 +1,10 @@
 package animation;
 
+import interaction.Creation;
+
 import javax.swing.*;
 import java.util.List;
+import java.util.ArrayList;
 import java.awt.*;
 
 public class GameScreen extends JFrame {
@@ -9,7 +12,7 @@ public class GameScreen extends JFrame {
     private int width;
     private int height;
     private Color background;
-    private List <Ball> balls;
+    private List <Ball> balls =new ArrayList<Ball>();
 
     public List<Ball> getBalls() {
         return balls;
@@ -39,6 +42,8 @@ public class GameScreen extends JFrame {
         gameScreen.setSize(1280,800);
         gameScreen.setVisible(true);
         gameScreen.screen.setBackground(Color.black);
+
+        new Creation(gameScreen);
     }
 
 }
