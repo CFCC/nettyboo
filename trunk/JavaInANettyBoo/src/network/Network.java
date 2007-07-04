@@ -164,6 +164,7 @@ public class Network {
                 } catch (IOException e) {
                     this.disconnect();
                     System.err.println(e);
+                    break;
                 }
             }
         }
