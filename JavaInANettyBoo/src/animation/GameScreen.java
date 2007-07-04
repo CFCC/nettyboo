@@ -1,7 +1,6 @@
 package animation;
 
-import interaction.Creation;
-import network.Network;
+import interaction.Interaction;
 
 import javax.swing.*;
 import java.awt.*;
@@ -74,7 +73,7 @@ public class GameScreen extends JFrame {
     public static void main(String[] args) {
         GameScreen gameScreen = new GameScreen();
 
-        new Creation(gameScreen);
+        new Interaction(gameScreen);
         
         gameScreen.setSize(1280, 800);
         gameScreen.screen.setBackground(Color.black);
