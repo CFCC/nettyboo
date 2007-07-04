@@ -19,7 +19,7 @@ public class Creation {
             private Point upPoint;
 
             public void mouseClicked(MouseEvent e) {
-                if (e.getButton()==e.BUTTON1 || e.getClickCount()==2) {
+                if (e.getButton()==e.BUTTON1 && e.getClickCount()==2) {
 
                     for (Ball ball : gamescreen.getBalls()) {
                         double x = ball.getPosition().getX() - e.getPoint().getX();
@@ -35,13 +35,13 @@ public class Creation {
             }
 
             public void mousePressed(MouseEvent e) {
-                if (e.getButton() == MouseEvent.BUTTON2) {
+                if (e.getButton() == MouseEvent.BUTTON3) {
                     downPoint = e.getPoint();
                 }
             }
 
             public void mouseReleased(MouseEvent e) {
-                if (e.getButton() == MouseEvent.BUTTON2) {
+                if (e.getButton() == MouseEvent.BUTTON3) {
                     upPoint = e.getPoint();
                     int xMoved = upPoint.x - downPoint.x;
                     int yMoved = upPoint.y - downPoint.y;
