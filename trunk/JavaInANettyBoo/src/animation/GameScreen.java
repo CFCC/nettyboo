@@ -1,9 +1,17 @@
 package animation;
 
 import interaction.Interaction;
+import network.Network;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.Timer;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -11,6 +19,11 @@ import java.util.List;
 
 public class GameScreen extends JFrame {
     private List<ScreenObject> screenObjects = new ArrayList<ScreenObject>();
+    private JButton leftComputerLinkButton;
+    private JButton rightComputerLinkButton;
+    private JPanel mainPanel;
+    private JPanel gameScreenHolder;
+    private Network network;
 
     public List<Ball> getBalls() {
         List<Ball> list = new ArrayList<Ball>();
@@ -49,20 +62,30 @@ public class GameScreen extends JFrame {
                     int x1 = b.getPosition().x + b.getSpeed().x;
                     int y1 = b.getPosition().y + b.getSpeed().y;
                     b.setPosition(new Point(x1, y1));
-
                 }
-
             }
         }
     };
 
     public GameScreen() {
+        this.network = new Network(this);
+        gameScreenHolder.add(screen);
+        add(mainPanel);
         new Timer(1000 / 30, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 repaint();
             }
         }).start();
-        add(screen);
+        leftComputerLinkButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                network.connectToServer("left", JOptionPane.showInternalInputDialog(getContentPane(), "IP address for left computer?"));
+            }
+        });
+        rightComputerLinkButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                network.connectToServer("right", JOptionPane.showInternalInputDialog(getContentPane(), "IP address for right computer?"));
+            }
+        });
     }
 
     //the list of balls on screen, each ball is assigned a specific number
@@ -78,7 +101,5 @@ public class GameScreen extends JFrame {
         gameScreen.setSize(1280, 800);
         gameScreen.screen.setBackground(Color.black);
         gameScreen.setVisible(true);
-
-//        Network network = new Network(gameScreen);
     }
 }
