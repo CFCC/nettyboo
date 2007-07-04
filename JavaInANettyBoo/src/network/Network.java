@@ -9,7 +9,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Scanner;
 
 @SuppressWarnings({"InfiniteLoopStatement", "UnusedDeclaration"})
 
@@ -20,32 +19,27 @@ public class Network {
     private static final String ACCEPTED_CONNECTION = "Accepted";
     private static final String REFUSED_CONNECTION = "Refused";
 
-    ScreenConnection leftScreen;
-    ScreenConnection rightScreen;
-    GameScreen gameScreen;
+    private ScreenConnection leftScreen;
+    private ScreenConnection rightScreen;
+    private GameScreen gameScreen;
 
     public Network(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
-        this.startServerThread();
-        this.connectToServer();
-    }
-
-    /* -----prompt for user input of IP addresses and connect to listenForClients */
-    void connectToServer() {
         this.leftScreen = new ScreenConnection();
         this.rightScreen = new ScreenConnection();
-        Scanner keyboard = new Scanner(System.in);
-        System.out.println("Left computer IP address?");
-        String ipAddress = keyboard.next();
-        leftScreen.attemptServerConnection(LEFT_SCREEN, ipAddress);
-        System.out.println("Right computer IP address?");
-        ipAddress = keyboard.next();
-        rightScreen.attemptServerConnection(RIGHT_SCREEN, ipAddress);
-        if (!leftScreen.isConnected()) {
-            System.out.println("No left screen.");
-        }
-        if (!rightScreen.isConnected()) {
-            System.out.println("No right screen.");
+        this.startServerThread();
+    }
+
+    /* -----make a client connection to a server */
+    public void connectToServer(String side, String ipAddress) {
+        if(ipAddress != null) {
+            ScreenConnection remoteScreen = new ScreenConnection();
+            remoteScreen.attemptServerConnection(side, ipAddress);
+            if(remoteScreen.isLeft()) {
+                this.leftScreen = remoteScreen;
+            } else {
+                this.rightScreen = remoteScreen;
+            }
         }
     }
 
@@ -76,6 +70,22 @@ public class Network {
                 }
             }
         }).start();
+    }
+
+    public boolean isLeftConnected() {
+        return this.leftScreen.isConnected();
+    }
+
+    public boolean isRightConnected() {
+        return this.rightScreen.isConnected();
+    }
+
+    public void sendToLeftScreen(Ball ball) {
+        this.leftScreen.sendScreenObject(ball);
+    }
+
+    public void sendToRightScreen(Ball ball) {
+        this.rightScreen.sendScreenObject(ball);
     }
 
     /* -----class to represent each other screen */
@@ -119,36 +129,35 @@ public class Network {
 
         /* attempt to connect to another program's listenForClients */
         boolean attemptServerConnection(String side, String ipAddress) {
-            if (!ipAddress.equalsIgnoreCase("none")) {
-                try {
-                    this.socket = new Socket(ipAddress, 2000);
-                    this.serialOutputStream = new ObjectOutputStream(this.socket.getOutputStream());
-                    this.serialInputStream = new ObjectInputStream(this.socket.getInputStream());
-
-                    this.serialOutputStream.writeObject(REQUEST_CONNECTION + side);
-
-                    if (REFUSED_CONNECTION.equals(this.serialInputStream.readObject())) {
-                        System.out.println("Connection to server refused.");
-                        this.socket.close();
-                        this.connected = false;
-                        return false;
-                    } else {
-                        this.connected = true;
-                        System.out.println("Connection to server accepted.");
-                        System.out.println(ipAddress + " Connected as " + side + " screen.");
-                        this.start();
-                        return true;
-                    }
-                } catch (IOException e) {
-                    System.err.println(e);
-                    this.connected = false;
-                    return false;
-                } catch (ClassNotFoundException e) {
-                    System.err.println(e);
-                    this.connected = false;
-                    return false;
+            try {
+                if(side.equals("left")) {
+                    this.left = true;
                 }
-            } else {
+                this.socket = new Socket(ipAddress, 2000);
+                this.serialOutputStream = new ObjectOutputStream(this.socket.getOutputStream());
+                this.serialInputStream = new ObjectInputStream(this.socket.getInputStream());
+
+                this.serialOutputStream.writeObject(REQUEST_CONNECTION + side);
+
+                if (REFUSED_CONNECTION.equals(this.serialInputStream.readObject())) {
+                    System.out.println("Connection to server refused.");
+                    this.socket.close();
+                    this.connected = false;
+                    return false;
+                } else {
+                    this.connected = true;
+                    System.out.println("Connection to server accepted.");
+                    System.out.println(ipAddress + " Connected as " + side + " screen.");
+                    this.start();
+                    return true;
+                }
+            } catch (IOException e) {
+                System.err.println(e);
+                this.connected = false;
+                return false;
+            } catch (ClassNotFoundException e) {
+                System.err.println(e);
+                this.connected = false;
                 return false;
             }
         }
@@ -165,7 +174,7 @@ public class Network {
             }
         }
 
-        public void sendBall(ScreenObject screenObject) {
+        public void sendScreenObject(ScreenObject screenObject) {
             try {
                 serialOutputStream.writeObject(screenObject);
             } catch (IOException e) {
