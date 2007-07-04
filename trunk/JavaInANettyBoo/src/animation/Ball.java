@@ -18,6 +18,14 @@ public class Ball {
         this.text= "";
     }
 
+    public Point getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(Point speed) {
+        this.speed = speed;
+    }
+
     public int getRadius() {
         return radius;
     }
