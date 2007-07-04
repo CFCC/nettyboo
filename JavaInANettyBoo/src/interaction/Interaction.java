@@ -2,12 +2,14 @@ package interaction;
 
 import animation.Ball;
 import animation.GameScreen;
-import animation.ScreenObject;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.MouseEvent;
+import javax.swing.JOptionPane;
+import java.awt.Color;
+import java.awt.Point;
 import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.List;
+import java.util.ArrayList;
 
 public class Interaction {
     GameScreen gamescreen;
@@ -18,6 +20,7 @@ public class Interaction {
         gamescreen.screen.addMouseListener(new MouseAdapter() {
             private Point downPoint;
             private Point upPoint;
+            private List<Ball> list=new ArrayList<Ball>();
 
             public void mouseClicked(MouseEvent e) {
                 
@@ -38,6 +41,7 @@ public class Interaction {
 
             public void mousePressed(MouseEvent e) {
                 if (e.getButton() == e.BUTTON1) {
+                    list.clear();
                     for (Ball ball : gamescreen.getBalls()) {
                         double x = ball.getPosition().getX() - e.getPoint().getX();
                         double y = ball.getPosition().getY() - e.getPoint().getY();
@@ -45,6 +49,7 @@ public class Interaction {
                         System.out.println(distance);
                         if (distance <= ball.getRadius()) {
                             ball.setSpeed(new Point(0, 0));
+                            list.add(ball);
                         }
                     }
                 }
@@ -56,7 +61,9 @@ public class Interaction {
                 int xMoved = upPoint.x - downPoint.x;
                 int yMoved = upPoint.y - downPoint.y;
                 if(e.getButton()==e.BUTTON1){
-                    
+                    for(Ball ball:list){
+                        ball.setSpeed(new Point(xMoved, yMoved));
+                    }
                 }
                 if (e.getButton() == MouseEvent.BUTTON3) {
                     gamescreen.addBall(new Ball(Color.yellow, new Point(xMoved, yMoved), downPoint, 50));
