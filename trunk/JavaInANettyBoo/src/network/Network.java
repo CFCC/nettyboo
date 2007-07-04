@@ -4,7 +4,9 @@ import animation.Ball;
 import animation.GameScreen;
 import animation.ScreenObject;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
@@ -56,7 +58,7 @@ public class Network {
             public void run() {
                 try {
                     this.serverListeningSocket = new ServerSocket(2000);
-                    System.out.println("Listening...");
+                    System.out.println("Server listening...");
                     while(true) {
                         Socket clientSocket = this.serverListeningSocket.accept();
                         ScreenConnection remoteScreen = new ScreenConnection();
@@ -79,10 +81,8 @@ public class Network {
     /* -----class to represent each other screen */
     class ScreenConnection extends Thread {
         private Socket socket;
-        private BufferedReader fromScreen;
-        private PrintStream toScreen;
-        private ObjectOutputStream ballOutputStream;
-        private ObjectInputStream ballInputStream;
+        private ObjectOutputStream serialOutputStream;
+        private ObjectInputStream serialInputStream;
         private boolean connected;
         private boolean left;
         private boolean killThread;
@@ -99,19 +99,19 @@ public class Network {
         boolean attemptClientConnection(Socket socket) {
             try {
                 this.socket = socket;
-                this.fromScreen = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-                this.toScreen = new PrintStream(this.socket.getOutputStream());
-                this.ballOutputStream = new ObjectOutputStream(this.socket.getOutputStream());
-                this.ballInputStream = new ObjectInputStream(this.socket.getInputStream());
-                String clientString = fromScreen.readLine();
+                this.serialOutputStream = new ObjectOutputStream(this.socket.getOutputStream());
+                this.serialInputStream = new ObjectInputStream(this.socket.getInputStream());
+                String clientString = (String)this.serialInputStream.readObject();
                 if (clientString.startsWith(REQUEST_CONNECTION)) {
                     System.out.println("Accepted connection to " + socket.getInetAddress().toString());
-                    toScreen.println(ACCEPTED_CONNECTION);
+                    this.serialOutputStream.writeObject(ACCEPTED_CONNECTION);
                     this.connected = true;
                     this.start();
                     return true;
                 }
             } catch (IOException e) {
+                System.err.println(e);
+            } catch (ClassNotFoundException e) {
                 System.err.println(e);
             }
             return true;
@@ -122,10 +122,12 @@ public class Network {
             if (!ipAddress.equalsIgnoreCase("none")) {
                 try {
                     this.socket = new Socket(ipAddress, 2000);
-                    this.fromScreen = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-                    this.toScreen = new PrintStream(this.socket.getOutputStream());
-                    this.toScreen.println(REQUEST_CONNECTION + side);
-                    if (this.fromScreen.readLine().equals(REFUSED_CONNECTION)) {
+                    this.serialOutputStream = new ObjectOutputStream(this.socket.getOutputStream());
+                    this.serialInputStream = new ObjectInputStream(this.socket.getInputStream());
+
+                    this.serialOutputStream.writeObject(REQUEST_CONNECTION + side);
+
+                    if (REFUSED_CONNECTION.equals(this.serialInputStream.readObject())) {
                         System.out.println("Connection to server refused.");
                         this.socket.close();
                         this.connected = false;
@@ -138,6 +140,10 @@ public class Network {
                         return true;
                     }
                 } catch (IOException e) {
+                    System.err.println(e);
+                    this.connected = false;
+                    return false;
+                } catch (ClassNotFoundException e) {
                     System.err.println(e);
                     this.connected = false;
                     return false;
@@ -161,7 +167,7 @@ public class Network {
 
         public void sendBall(ScreenObject screenObject) {
             try {
-                ballOutputStream.writeObject(screenObject);
+                serialOutputStream.writeObject(screenObject);
             } catch (IOException e) {
                 System.err.println(e);
             }
@@ -171,7 +177,7 @@ public class Network {
             while (true) {
                 try {
                     /* check for balls being sent */
-                    Ball recievedBall = (Ball) ballInputStream.readObject();
+                    Ball recievedBall = (Ball) serialInputStream.readObject();
                     gameScreen.addBall(recievedBall);
                 } catch (IOException e) {
                     this.disconnect();
