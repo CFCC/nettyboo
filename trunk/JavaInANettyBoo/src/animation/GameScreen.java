@@ -11,10 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameScreen extends JFrame {
-
-    private int width;
-    private int height;
-    private Color background;
     private List<ScreenObject> screenObjects = new ArrayList<ScreenObject>();
 
     public List<Ball> getBalls() {
