@@ -33,12 +33,8 @@ public class Network {
 
     /* -----prompt for user input of IP addresses and connect to listenForClients */
     void connectToServer() {
-        if(this.leftScreen != null) {
-            this.leftScreen.disconnect();
-        }
-        if(this.rightScreen != null) {
-            this.rightScreen.disconnect();
-        }
+        this.leftScreen = new ScreenConnection();
+        this.rightScreen = new ScreenConnection();
         Scanner keyboard = new Scanner(System.in);
         System.out.println("Left computer IP address?");
         String ipAddress = keyboard.next();
