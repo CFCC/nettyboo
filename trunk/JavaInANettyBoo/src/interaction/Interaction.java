@@ -9,10 +9,10 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
 
-public class Creation {
+public class Interaction {
     GameScreen gamescreen;
 
-    public Creation(GameScreen screen) {
+    public Interaction(GameScreen screen) {
         this.gamescreen = screen;
 
         gamescreen.screen.addMouseListener(new MouseAdapter() {
@@ -48,16 +48,17 @@ public class Creation {
                         }
                     }
                 }
-                if (e.getButton() == MouseEvent.BUTTON3) {
-                    downPoint = e.getPoint();
-                }
+                downPoint = e.getPoint();
             }
 
             public void mouseReleased(MouseEvent e) {
+                upPoint = e.getPoint();
+                int xMoved = upPoint.x - downPoint.x;
+                int yMoved = upPoint.y - downPoint.y;
+                if(e.getButton()==e.BUTTON1){
+                    
+                }
                 if (e.getButton() == MouseEvent.BUTTON3) {
-                    upPoint = e.getPoint();
-                    int xMoved = upPoint.x - downPoint.x;
-                    int yMoved = upPoint.y - downPoint.y;
                     gamescreen.addBall(new Ball(Color.yellow, new Point(xMoved, yMoved), downPoint, 50));
                 }
             }
