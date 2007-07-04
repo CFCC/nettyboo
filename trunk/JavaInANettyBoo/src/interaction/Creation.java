@@ -58,7 +58,7 @@ public class Creation {
                     upPoint = e.getPoint();
                     int xMoved = upPoint.x - downPoint.x;
                     int yMoved = upPoint.y - downPoint.y;
-                    gamescreen.addBall(new Ball(Color.yellow, new Point(xMoved, yMoved), downPoint, 100));
+                    gamescreen.addBall(new Ball(Color.yellow, new Point(xMoved, yMoved), downPoint, 50));
                 }
             }
         });
