@@ -25,7 +25,11 @@ public class GameScreen extends JFrame {
             super.paintComponent(gg);
             Graphics2D g = (Graphics2D) gg;
             for (Ball fart : balls) {
-                g.fillOval(fart.getPosition().x,fart.getPosition().y,60,60);
+                g.setColor(fart.getColor());
+                g.fillOval(fart.getPosition().x, fart.getPosition().y, 100, 100);
+                fart.setPosition(new Point(fart.getPosition().x + fart.getSpeed().x , fart.getPosition().y + fart.getSpeed().y));
+
+
             }
         }
     };
