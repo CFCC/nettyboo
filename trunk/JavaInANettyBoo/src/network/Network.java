@@ -1,146 +1,170 @@
 package network;
 
-import java.util.Scanner;
-import java.io.*;
-import java.net.Socket;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Scanner;
 
-/**
- * Created by IntelliJ IDEA.
- * User: Ryan
- * Date: Jul 2, 2007
- * Time: 2:49:42 PM
- * To change this template use File | Settings | File Templates.
- */
+@SuppressWarnings({"InfiniteLoopStatement", "UnusedDeclaration"})
 
+public class Network {
+    private static final String REQUEST_CONNECTION = "Requesting connection on ";
+    private static final String LEFT_SCREEN = "left";
+    private static final String RIGHT_SCREEN = "right";
+    private static final String ACCEPTED_CONNECTION = "Accepted";
+    private static final String REFUSED_CONNECTION = "Refused";
 
-public class Network{
-    String leftIP;
-    String rightIP;
-    Socket leftSocket;
-    Socket rightSocket;
-    ServerSocket serverListeningSocket;
+    ScreenConnection leftScreen;
+    ScreenConnection rightScreen;
 
+    /* -----main method */
+    public static void main(String[] args) {
+        Network david = new Network();
+    }
+
+    /* -----constructor method */
     public Network() {
-        this.server();
+        this.startServerThread();
+        this.connectToServer();
+    }
+
+    /* -----prompt for user input of IP addresses and connect to listenForClients */
+    void connectToServer() {
+        this.leftScreen.disconnect();
+        this.rightScreen.disconnect();
         Scanner keyboard = new Scanner(System.in);
-        System.out.println("Left computer IP?");
-        this.leftIP = keyboard.next();
-        System.out.println("Right computer IP?");
-        this.rightIP = keyboard.next();
-        if(!this.leftIP.equalsIgnoreCase("none")) {
-            try {
-                this.leftSocket = new Socket(this.leftIP, 2000);
-                System.out.println(this.leftIP + " Connected as left screen.");
-                BufferedReader fromServer;
-                PrintStream toServer;
-                fromServer = new BufferedReader(new InputStreamReader(this.leftSocket.getInputStream()));
-                toServer = new PrintStream(this.leftSocket.getOutputStream());
-                System.out.println("I say: \"I got candy. Get in the van. I want you on my left\"");
-                toServer.println("I got candy. Get in the van. I want you on my left");
-                String serverResponse = fromServer.readLine();
-                System.out.println("Server says: \"" + serverResponse + "\"");
-                if(serverResponse.equals("Sorry, Charlie. I got enough flapjacks on the stack.")) {
-                    this.leftIP = "none";
-                    this.leftSocket.close();
-                }
-            } catch (IOException e) {
-                System.err.println("CBTF: Can't connect to left screen server.\n" + e);
-            }
-        } else {
+        System.out.println("Left computer IP address?");
+        String ipAddress = keyboard.next();
+        leftScreen.attemptServerConnection(LEFT_SCREEN, ipAddress);
+        System.out.println("Right computer IP address?");
+        ipAddress = keyboard.next();
+        rightScreen.attemptServerConnection(RIGHT_SCREEN, ipAddress);
+        if (!leftScreen.isConnected()) {
             System.out.println("No left screen.");
         }
-        if(!this.rightIP.equalsIgnoreCase("none")) {
-            try {
-                this.rightSocket = new Socket(this.rightIP, 2000);
-                System.out.println(this.rightIP + " Connected as right screen.");
-                BufferedReader fromServer;
-                PrintStream toServer;
-                fromServer = new BufferedReader(new InputStreamReader(rightSocket.getInputStream()));
-                toServer = new PrintStream(rightSocket.getOutputStream());
-                System.out.println("I say: \"I got candy. Get in the van. I want you on my right\"");
-                toServer.println("I got candy. Get in the van. I want you on my right");
-                String serverResponse = fromServer.readLine();
-                System.out.println("Server says: \"" + serverResponse + "\"");
-                if(serverResponse.equals("Sorry, Charlie. I got enough flapjacks on the stack.")) {
-                    this.rightIP = "none";
-                    this.rightSocket.close();
-                }
-            } catch (IOException e) {
-                System.err.println("CBTF: Can't connect to right screen server.\n" + e);
-            }
-        } else {
+        if (!rightScreen.isConnected()) {
             System.out.println("No right screen.");
         }
     }
 
-    void server() {
+    /* -----start listenForClients listening */
+    void startServerThread() {
         new Thread(new Runnable() {
+            Socket client;
+            ServerSocket serverListeningSocket;
+
             public void run() {
                 try {
-                    serverListeningSocket = new ServerSocket(2000);
-                } catch(IOException e) {
-                    System.err.println("CBTF: Can't start server.\n" + e);
-                }
-                System.out.println("Server socket listening...");
-                while(true) {
-                    try {
-                        Socket clientSocket = serverListeningSocket.accept();
-                        Connection connection = new Connection(clientSocket);
-                    } catch (IOException e) {
-                        System.err.println("CBTF: Server listening loop failed.\n" + e);
+                    this.serverListeningSocket = new ServerSocket(2000);
+                    System.out.println("Listening...");
+                    while(true) {
+                        Socket clientSocket = this.serverListeningSocket.accept();
+                        ScreenConnection remoteScreen = new ScreenConnection();
+                        remoteScreen.attemptClientConnection(clientSocket);
+                        if(remoteScreen.isLeft()) {
+                            leftScreen.disconnect();
+                            leftScreen = remoteScreen;
+                        } else {
+                            rightScreen.disconnect();
+                            rightScreen = remoteScreen;
+                        }
                     }
+                } catch (IOException e) {
+                    System.err.println(e);
                 }
             }
         }).start();
     }
 
-    public static void main(String[] args) {
-        Network david = new Network();
-    }
+    /* -----class to represent each other screen */
+    class ScreenConnection extends Thread {
+        private Socket socket;
+        private BufferedReader fromScreen;
+        private PrintStream toScreen;
+        private boolean connected;
+        private boolean left;
 
-    class Connection extends Thread {
-        Socket client;
-        BufferedReader fromClient;
-        PrintStream toClient;
+        public boolean isConnected() {
+            return connected;
+        }
 
-        public Connection(Socket client) {
-            this.client = client;
+        public boolean isLeft() {
+            return left;
+        }
+
+        /* attempt to connect to another program's client */
+        boolean attemptClientConnection(Socket socket) {
             try {
-                fromClient = new BufferedReader(new InputStreamReader(client.getInputStream()));
-                toClient = new PrintStream(client.getOutputStream());
+                this.socket = socket;
+                this.fromScreen = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+                this.toScreen = new PrintStream(this.socket.getOutputStream());
+                String clientString = fromScreen.readLine();
+                if (clientString.startsWith(REQUEST_CONNECTION)) {
+                    System.out.println("Accepted connection to " + socket.getInetAddress().toString());
+                    toScreen.println(ACCEPTED_CONNECTION);
+                    this.connected = true;
+                    this.start();
+                    return true;
+                }
             } catch (IOException e) {
-                System.err.println("CBTF: Server can't set up socket streams.\n" + e);
+                System.err.println(e);
             }
-            this.start();
+            return true;
+        }
+
+        /* attempt to connect to another program's listenForClients */
+        boolean attemptServerConnection(String side, String ipAddress) {
+            if (!ipAddress.equalsIgnoreCase("none")) {
+                try {
+                    this.socket = new Socket(ipAddress, 2000);
+                    this.fromScreen = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+                    this.toScreen = new PrintStream(this.socket.getOutputStream());
+                    this.toScreen.println(REQUEST_CONNECTION + side);
+                    if (this.fromScreen.readLine().equals(REFUSED_CONNECTION)) {
+                        System.out.println("Connection to server refused.");
+                        this.socket.close();
+                        this.connected = false;
+                        return false;
+                    } else {
+                        this.connected = true;
+                        System.out.println("Connection to server accepted.");
+                        System.out.println(ipAddress + " Connected as " + side + " screen.");
+                        this.start();
+                        return true;
+                    }
+                } catch (IOException e) {
+                    System.err.println(e);
+                    this.connected = false;
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+
+        /* close a connection to the screen */
+        void disconnect() {
+            if(this.connected) {
+                try {
+                    this.socket.close();
+                } catch (IOException e) {
+                    System.err.println(e);
+                }
+            }
         }
 
         public void run() {
-            try {
-                String clientString = fromClient.readLine();
-                if(clientString.startsWith("I got candy. Get in the van.")) {
-                    if(clientString.endsWith("left")) {
-                        if(rightIP.equals("none")) {
-                            toClient.println("roger Roger. What's your vector Victor?");
-                            rightSocket = client;
-                            rightIP = client.getInetAddress().toString();
-                        } else {
-                            toClient.println("Sorry, Charlie. I got enough flapjacks on the stack.");
-                            client.close();
-                        }
-                    } else {
-                        if(leftIP.equals("none")) {
-                            toClient.println("roger Roger. What's your vector Victor?");
-                            leftSocket = client;
-                            leftIP = client.getInetAddress().toString();
-                        } else {
-                            toClient.println("Sorry, Charlie. I got enough flapjacks on the stack.");
-                            client.close();
-                        }
-                    }
+            while (true) {
+                try {
+                    /* check for balls being sent */
+                    String recievedMessage = fromScreen.readLine();
+                } catch (IOException e) {
+                    this.disconnect();
+                    System.err.println(e);
                 }
-            } catch (IOException e) {
-                System.err.println("CBTF: Server can't read from client\n" + e);
             }
         }
     }
