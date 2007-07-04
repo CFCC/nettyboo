@@ -35,16 +35,28 @@ public class GameScreen extends JFrame {
         protected void paintComponent(Graphics gg) {
             super.paintComponent(gg);
             Graphics2D g = (Graphics2D) gg;
-            for (Ball fart : getBalls()) {
-                g.setColor(fart.getColor());
-                g.fillOval(fart.getPosition().x, fart.getPosition().y, 100, 100);
-                fart.setPosition(new Point(fart.getPosition().x + fart.getSpeed().x, fart.getPosition().y + fart.getSpeed().y));
-                if (fart.getPosition().y < 0) {
-                    fart.getSpeed().y = -fart.getSpeed().y;
+            for (Ball b : getBalls()) {
+                g.setColor(b.getColor());
+                g.fillOval(b.getPosition().x - b.getRadius(), b.getPosition().y - b.getRadius(), b.getRadius()*2, b.getRadius()*2);
+                if (b.getPosition().y + b.getSpeed().y -b.getRadius() < 0) {
+                    int x1 = b.getPosition().x + b.getSpeed().x;
+                    int y1 = -b.getSpeed().y - b.getPosition().y + 2*b.getRadius() ;
+                    b.getPosition().x = x1;
+                    b.getPosition().y = y1;
+                    b.getSpeed().y = -b.getSpeed().y;
+                } else if (b.getPosition().y  + b.getSpeed().y + b.getRadius()> getHeight()) {
+                    int x1 = b.getPosition().x + b.getSpeed().x;
+                    int y1 = getHeight() - 2* b.getRadius() - (b.getSpeed().y - (getHeight() - b.getPosition().y)) ;
+                    b.getPosition().x = x1;
+                    b.getPosition().y = y1;
+                    b.getSpeed().y = -b.getSpeed().y;
+                } else {
+                    int x1 = b.getPosition().x + b.getSpeed().x;
+                    int y1 = b.getPosition().y + b.getSpeed().y;
+                    b.setPosition(new Point(x1, y1));
+
                 }
-                if (fart.getPosition().y > 645) {
-                    fart.getSpeed().y = -fart.getSpeed().y;
-                }
+
             }
         }
     };
