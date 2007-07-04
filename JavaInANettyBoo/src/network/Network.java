@@ -2,6 +2,7 @@ package network;
 
 import animation.Ball;
 import animation.GameScreen;
+import animation.ScreenObject;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -158,9 +159,9 @@ public class Network {
             }
         }
 
-        public void sendBall(Ball ball) {
+        public void sendBall(ScreenObject screenObject) {
             try {
-                ballOutputStream.writeObject(ball);
+                ballOutputStream.writeObject(screenObject);
             } catch (IOException e) {
                 System.err.println(e);
             }
