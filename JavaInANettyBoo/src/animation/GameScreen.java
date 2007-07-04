@@ -9,6 +9,8 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+import network.Network;
+
 public class GameScreen extends JFrame {
     
     private int width;
@@ -54,7 +56,8 @@ public class GameScreen extends JFrame {
         gameScreen.screen.setBackground(Color.black);
 
         new Creation(gameScreen);
-    }
 
+        Network network = new Network(gameScreen);
+    }
 }
 
