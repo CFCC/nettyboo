@@ -33,7 +33,7 @@ public class GameScreen extends JFrame {
                 if (fart.getPosition().y < 0) {
                     fart.getSpeed().y = -fart.getSpeed().y;
                 }
-                if (fart.getPosition().y > 640) {
+                if (fart.getPosition().y > 645) {
                     fart.getSpeed().y = -fart.getSpeed().y;
                 }
             }
