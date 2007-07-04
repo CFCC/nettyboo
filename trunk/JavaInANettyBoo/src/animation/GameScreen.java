@@ -65,12 +65,13 @@ public class GameScreen extends JFrame {
 
     public static void main(String[] args) {
         GameScreen gameScreen = new GameScreen();
-        gameScreen.setSize(1280, 800);
-        gameScreen.setVisible(true);
-        gameScreen.screen.setBackground(Color.black);
 
         new Creation(gameScreen);
+        
+        gameScreen.setSize(1280, 800);
+        gameScreen.screen.setBackground(Color.black);
+        gameScreen.setVisible(true);
 
-        Network network = new Network(gameScreen);
+//        Network network = new Network(gameScreen);
     }
 }
