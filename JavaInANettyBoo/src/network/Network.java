@@ -21,7 +21,6 @@ public class Network {
     ScreenConnection rightScreen;
     GameScreen gameScreen;
 
-    /* -----constructor method */
     public Network(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
         this.startServerThread();
@@ -85,6 +84,7 @@ public class Network {
         private ObjectInputStream ballInputStream;
         private boolean connected;
         private boolean left;
+        private boolean killThread;
 
         public boolean isConnected() {
             return connected;
@@ -154,6 +154,7 @@ public class Network {
                 } catch (IOException e) {
                     System.err.println(e);
                 }
+                this.killThread = true;
             }
         }
 
@@ -174,9 +175,12 @@ public class Network {
                 } catch (IOException e) {
                     this.disconnect();
                     System.err.println(e);
-                    break;
                 } catch (ClassNotFoundException e) {
+                    this.disconnect();
                     System.err.println(e);
+                }
+                if(this.killThread) {
+                    return;
                 }
             }
         }
