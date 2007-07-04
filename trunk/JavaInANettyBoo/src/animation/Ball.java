@@ -1,30 +1,18 @@
 package animation;
 
 import java.awt.*;
-import java.io.Serializable;
 
-public class Ball implements Serializable {
-    private  Point position;
-    private  Point speed;
+public class Ball extends ScreenObject {
     private Color color;
     private  int radius;
 
     private String text;
 
     public Ball(Color color, Point speed, Point position, int radius) {
+        super(speed, position);
         this.color = color;
-        this.speed = speed;
-        this.position = position;
         this.radius = radius;
         this.text= "";
-    }
-
-    public Point getSpeed() {
-        return speed;
-    }
-
-    public void setSpeed(Point speed) {
-        this.speed = speed;
     }
 
     public int getRadius() {
@@ -39,10 +27,6 @@ public class Ball implements Serializable {
         this.text = text;
     }
 
-    public Point getPosition() {
-        return position;
-    }
-
     public Color getColor() {
         return color;
     }
@@ -51,7 +35,4 @@ public class Ball implements Serializable {
         this.color = color;
     }
 
-    public void setPosition(Point position) {
-        this.position = position;
-    }
 }
