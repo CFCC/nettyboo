@@ -1,32 +1,41 @@
 package animation;
 
 import interaction.Creation;
+import network.Network;
 
 import javax.swing.*;
-import java.util.List;
-import java.util.ArrayList;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-
-import network.Network;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameScreen extends JFrame {
 
     private int width;
     private int height;
     private Color background;
-    private List<ScreenObject> balls = new ArrayList<ScreenObject>();
+    private List<ScreenObject> screenObjects = new ArrayList<ScreenObject>();
 
-    public List<ScreenObject> getBalls() {
-        return balls;
+    public List<Ball> getBalls() {
+        List<Ball> list = new ArrayList<Ball>();
+        for (ScreenObject ball : screenObjects) {
+            if (ball instanceof Ball) {
+                list.add((Ball) ball);
+            }
+        }
+        return list;
+    }
+
+    public List<ScreenObject> getScreenObjects() {
+        return screenObjects;
     }
 
     public JPanel screen = new JPanel() {
         protected void paintComponent(Graphics gg) {
             super.paintComponent(gg);
             Graphics2D g = (Graphics2D) gg;
-            for (ScreenObject fart : balls) {
+            for (Ball fart : getBalls()) {
                 g.setColor(fart.getColor());
                 g.fillOval(fart.getPosition().x, fart.getPosition().y, 100, 100);
                 fart.setPosition(new Point(fart.getPosition().x + fart.getSpeed().x, fart.getPosition().y + fart.getSpeed().y));
@@ -51,7 +60,7 @@ public class GameScreen extends JFrame {
 
     //the list of balls on screen, each ball is assigned a specific number
     public void addBall(ScreenObject fart) {
-        balls.add(fart);
+        screenObjects.add(fart);
     }
 
     public static void main(String[] args) {
