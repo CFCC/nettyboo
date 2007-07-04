@@ -1,8 +1,9 @@
 package animation;
 
 import java.awt.*;
+import java.io.Serializable;
 
-public class Ball {
+public class Ball implements Serializable {
     private  Point position;
     private  Point speed;
     private Color color;
