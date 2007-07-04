@@ -1,9 +1,9 @@
 package network;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
+import animation.Ball;
+import animation.GameScreen;
+
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
@@ -19,14 +19,11 @@ public class Network {
 
     ScreenConnection leftScreen;
     ScreenConnection rightScreen;
-
-    /* -----main method */
-    public static void main(String[] args) {
-        Network david = new Network();
-    }
+    GameScreen gameScreen;
 
     /* -----constructor method */
-    public Network() {
+    public Network(GameScreen gameScreen) {
+        this.gameScreen = gameScreen;
         this.startServerThread();
         this.connectToServer();
     }
@@ -84,6 +81,8 @@ public class Network {
         private Socket socket;
         private BufferedReader fromScreen;
         private PrintStream toScreen;
+        private ObjectOutputStream ballOutputStream;
+        private ObjectInputStream ballInputStream;
         private boolean connected;
         private boolean left;
 
@@ -101,6 +100,8 @@ public class Network {
                 this.socket = socket;
                 this.fromScreen = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
                 this.toScreen = new PrintStream(this.socket.getOutputStream());
+                this.ballOutputStream = new ObjectOutputStream(this.socket.getOutputStream());
+                this.ballInputStream = new ObjectInputStream(this.socket.getInputStream());
                 String clientString = fromScreen.readLine();
                 if (clientString.startsWith(REQUEST_CONNECTION)) {
                     System.out.println("Accepted connection to " + socket.getInetAddress().toString());
@@ -156,15 +157,26 @@ public class Network {
             }
         }
 
+        public void sendBall(Ball ball) {
+            try {
+                ballOutputStream.writeObject(ball);
+            } catch (IOException e) {
+                System.err.println(e);
+            }
+        }
+
         public void run() {
             while (true) {
                 try {
                     /* check for balls being sent */
-                    String recievedMessage = fromScreen.readLine();
+                    Ball recievedBall = (Ball) ballInputStream.readObject();
+                    gameScreen.addBall(recievedBall);
                 } catch (IOException e) {
                     this.disconnect();
                     System.err.println(e);
                     break;
+                } catch (ClassNotFoundException e) {
+                    System.err.println(e);
                 }
             }
         }
