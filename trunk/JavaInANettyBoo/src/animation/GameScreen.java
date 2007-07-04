@@ -12,11 +12,11 @@ import java.awt.event.ActionEvent;
 import network.Network;
 
 public class GameScreen extends JFrame {
-    
+
     private int width;
     private int height;
     private Color background;
-    private List <Ball> balls =new ArrayList<Ball>();
+    private List<Ball> balls = new ArrayList<Ball>();
 
     public List<Ball> getBalls() {
         return balls;
@@ -29,14 +29,19 @@ public class GameScreen extends JFrame {
             for (Ball fart : balls) {
                 g.setColor(fart.getColor());
                 g.fillOval(fart.getPosition().x, fart.getPosition().y, 100, 100);
-                fart.setPosition(new Point(fart.getPosition().x + fart.getSpeed().x , fart.getPosition().y + fart.getSpeed().y));
-
-
+                fart.setPosition(new Point(fart.getPosition().x + fart.getSpeed().x, fart.getPosition().y + fart.getSpeed().y));
+                if (fart.getPosition().y < 0) {
+                    fart.getSpeed().y = -fart.getSpeed().y;
+                }
+                if (fart.getPosition().y > 640) {
+                    fart.getSpeed().y = -fart.getSpeed().y;
+                }
             }
         }
     };
+
     public GameScreen() {
-        new Timer(1000/30, new ActionListener() {
+        new Timer(1000 / 30, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 repaint();
             }
@@ -45,13 +50,13 @@ public class GameScreen extends JFrame {
     }
 
     //the list of balls on screen, each ball is assigned a specific number
-    public void addBall(Ball fart){
+    public void addBall(Ball fart) {
         balls.add(fart);
     }
 
     public static void main(String[] args) {
         GameScreen gameScreen = new GameScreen();
-        gameScreen.setSize(1280,800);
+        gameScreen.setSize(1280, 800);
         gameScreen.setVisible(true);
         gameScreen.screen.setBackground(Color.black);
 
