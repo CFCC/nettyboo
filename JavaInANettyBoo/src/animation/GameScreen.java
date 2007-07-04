@@ -16,9 +16,9 @@ public class GameScreen extends JFrame {
     private int width;
     private int height;
     private Color background;
-    private List<Ball> balls = new ArrayList<Ball>();
+    private List<ScreenObject> balls = new ArrayList<ScreenObject>();
 
-    public List<Ball> getBalls() {
+    public List<ScreenObject> getBalls() {
         return balls;
     }
 
@@ -26,7 +26,7 @@ public class GameScreen extends JFrame {
         protected void paintComponent(Graphics gg) {
             super.paintComponent(gg);
             Graphics2D g = (Graphics2D) gg;
-            for (Ball fart : balls) {
+            for (ScreenObject fart : balls) {
                 g.setColor(fart.getColor());
                 g.fillOval(fart.getPosition().x, fart.getPosition().y, 100, 100);
                 fart.setPosition(new Point(fart.getPosition().x + fart.getSpeed().x, fart.getPosition().y + fart.getSpeed().y));
@@ -50,7 +50,7 @@ public class GameScreen extends JFrame {
     }
 
     //the list of balls on screen, each ball is assigned a specific number
-    public void addBall(Ball fart) {
+    public void addBall(ScreenObject fart) {
         balls.add(fart);
     }
 
