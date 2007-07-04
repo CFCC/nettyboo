@@ -22,14 +22,13 @@ public class Creation {
                 if (e.getButton()==e.BUTTON1 || e.getClickCount()==2) {
 
                     for (Ball ball : gamescreen.getBalls()) {
-
                         double x = ball.getPosition().getX() - e.getPoint().getX();
                         double y = ball.getPosition().getX() - e.getPoint().getY();
                         double distance = Math.sqrt(x * x + y * y);
                         System.out.println(distance);
                         if (distance <= ball.getRadius()) {
                             ball.setText(JOptionPane.showInputDialog("Enter new text for ball:"));
-                            
+
                         }
                     }
                 }
@@ -46,7 +45,7 @@ public class Creation {
                     upPoint = e.getPoint();
                     int xMoved = upPoint.x - downPoint.x;
                     int yMoved = upPoint.y - downPoint.y;
-                    gamescreen.addBall(new Ball(Color.blue, new Point(xMoved, yMoved), downPoint, 10));
+                    gamescreen.addBall(new Ball(Color.blue, new Point(xMoved, yMoved), downPoint, 100));
                 }
             }
         });
