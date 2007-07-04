@@ -65,4 +65,3 @@ public class GameScreen extends JFrame {
         Network network = new Network(gameScreen);
     }
 }
-

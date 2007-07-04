@@ -23,7 +23,7 @@ public class Creation {
 
                     for (Ball ball : gamescreen.getBalls()) {
                         double x = ball.getPosition().getX() - e.getPoint().getX();
-                        double y = ball.getPosition().getX() - e.getPoint().getY();
+                        double y = ball.getPosition().getY() - e.getPoint().getY();
                         double distance = Math.sqrt(x * x + y * y);
                         System.out.println(distance);
                         if (distance <= ball.getRadius()) {
@@ -35,6 +35,15 @@ public class Creation {
             }
 
             public void mousePressed(MouseEvent e) {
+                for(Ball ball:gamescreen.getBalls()){
+                    double x = ball.getPosition().getX() - e.getPoint().getX();
+                    double y = ball.getPosition().getY() - e.getPoint().getY();
+                    double distance = Math.sqrt(x * x + y * y);
+                    System.out.println(distance);
+                    if(distance<=ball.getRadius()){
+                       ball.setSpeed(new Point(0,0));
+                    }
+                }
                 if (e.getButton() == MouseEvent.BUTTON3) {
                     downPoint = e.getPoint();
                 }
