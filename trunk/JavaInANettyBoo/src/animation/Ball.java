@@ -49,4 +49,8 @@ public class Ball {
     public void setColor(Color color) {
         this.color = color;
     }
+
+    public void setPosition(Point position) {
+        this.position = position;
+    }
 }
