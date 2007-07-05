@@ -69,11 +69,18 @@ public class GameScreen extends JFrame {
                     if (position.x + speed.x + radius > screenWidth) {
                         x1 = screenWidth - 2 * radius - (speed.x - (screenWidth - position.x));
                         speed.x = -speed.x;
+                        if (network.isRightConnected()) {
+                            network.sendToRightScreen(b);
+                            screenObjects.remove(b);
+                        } else {
+                            x1 = position.x + speed.x;
+                        }
+
                     } else {
                         x1 = position.x + speed.x;
                     }
-                }
 
+                }
                 // Get New Y
                 if (position.y + speed.y - radius < 0) {
                     y1 = -(position.y + speed.y) + (2 * radius);
