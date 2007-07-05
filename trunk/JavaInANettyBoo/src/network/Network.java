@@ -6,15 +6,12 @@ import animation.GameScreen;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 
-@SuppressWarnings({"InfiniteLoopStatement", "UnusedDeclaration"})
+@SuppressWarnings({"InfiniteLoopStatement"})
 
 public class Network {
     private ScreenConnection leftScreen;
     private ScreenConnection rightScreen;
-    private List<String> ipList = new ArrayList<String>();
     private GameScreen gameScreen;
 
     public Network(GameScreen gameScreen) {
