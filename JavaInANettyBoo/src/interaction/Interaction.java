@@ -2,6 +2,7 @@ package interaction;
 
 import animation.Ball;
 import animation.GameScreen;
+import animation.Sounder;
 
 import javax.swing.JOptionPane;
 import java.awt.Color;
@@ -82,7 +83,14 @@ public class Interaction {
                 if (e.getButton() == MouseEvent.BUTTON3 || (e.getModifiers() & KeyEvent.CTRL_MASK) != 0) {
                     int alg = (int) (.1 * elapsedTime);
                     System.out.println(alg);
-                    gamescreen.addBall(new Ball(Color.yellow, new Point(xMoved, yMoved), downPoint, alg));
+                    Point position = new Point(xMoved, yMoved);
+                    Ball ball = new Ball(Color.yellow, position, downPoint, alg);
+                    GameScreen.ClickMode clickMode = gamescreen.getClickMode();
+                    if (clickMode == GameScreen.ClickMode.BALL) {
+                        gamescreen.addBall(ball);
+                    } else if (clickMode == GameScreen.ClickMode.SOUND) {
+                        gamescreen.addBall(new Sounder(Color.yellow, position, downPoint, alg));
+                    }
                 }
             }
         });

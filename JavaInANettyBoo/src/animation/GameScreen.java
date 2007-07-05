@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JToolBar;
 import javax.swing.Timer;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -28,7 +29,12 @@ public class GameScreen extends JFrame {
     private JButton rightComputerLinkButton;
     private JPanel mainPanel;
     private JPanel gameScreenHolder;
+    private JToolBar toolbar;
+    private JButton ballButton;
+    private JButton soundButton;
     private Network network;
+    private Interaction interaction;
+    private ClickMode clickMode;
 
     public List<Ball> getBalls() {
         List<Ball> list = new ArrayList<Ball>();
@@ -113,6 +119,7 @@ public class GameScreen extends JFrame {
 
     public GameScreen() {
         this.network = new Network(this);
+        this.interaction = new Interaction(this);
         gameScreenHolder.add(screen);
         add(mainPanel);
         new Timer(1000 / 60, new ActionListener() {
@@ -138,17 +145,34 @@ public class GameScreen extends JFrame {
                 network.connectToServer("right", JOptionPane.showInternalInputDialog(getContentPane(), "IP address for right computer?"));
             }
         });
+        setMode(ClickMode.BALL);
+        ballButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                setMode(ClickMode.BALL);
+            }
+        });
+        soundButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                setMode(ClickMode.SOUND);
+            }
+        });
+    }
+
+    private void setMode(ClickMode mode) {
+        this.clickMode = mode;
+        ballButton.setSelected(mode == ClickMode.BALL);
+        soundButton.setSelected(mode == ClickMode.SOUND);
     }
 
     //the list of balls on screen, each ball is assigned a specific number
     public void addBall(ScreenObject fart) {
         screenObjects.add(fart);
+        fart.setGameScreen(this);
     }
 
     public static void main(String[] args) {
         GameScreen gameScreen = new GameScreen();
         gameScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        new Interaction(gameScreen);
 
         gameScreen.setSize(1280, 800);
         gameScreen.screen.setBackground(Color.black);
@@ -162,8 +186,14 @@ public class GameScreen extends JFrame {
     }
 
     public void addBallFromRight(Ball recievedBall) {
-
         recievedBall.getPosition().x = getWidth();
         addBall(recievedBall);
     }
+
+    public ClickMode getClickMode() {
+        return clickMode;
+    }
+
+    public static enum ClickMode { BALL, SOUND }
+
 }
