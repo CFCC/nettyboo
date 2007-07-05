@@ -39,8 +39,7 @@ public class NettyBooFinder {
 
     public void findMoreNettyBoos(final DefaultListModel data) {
         try {
-            this.pingBuffer = MULTICAST_CQ.getBytes();
-            this.pingingPacket.setData(this.pingBuffer);
+            this.pingingPacket.setData(MULTICAST_CQ.getBytes());
             this.cqMulticastSocket.send(this.pingingPacket);
             new Thread(new Runnable() {
                 public void run() {
