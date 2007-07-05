@@ -16,9 +16,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameScreen extends JFrame {
-    private List<ScreenObject> screenObjects = new ArrayList<ScreenObject>();
+    private List<ScreenObject> screenObjects = new CopyOnWriteArrayList<ScreenObject>();
     private JButton leftComputerLinkButton;
     private JButton rightComputerLinkButton;
     private JPanel mainPanel;
@@ -59,6 +60,7 @@ public class GameScreen extends JFrame {
                     x1 = -(position.x + speed.x) + (2 * radius);
                     if (network.isLeftConnected()) {
                         network.sendToLeftScreen(b);
+                        screenObjects.remove(b);
                     } else {
                         speed.x = -speed.x;
                     }
