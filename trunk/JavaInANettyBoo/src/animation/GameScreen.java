@@ -62,7 +62,7 @@ public class GameScreen extends JFrame {
                     x1 = -(position.x + speed.x) + (2 * radius);
                     if (network.isLeftConnected()) {
                         network.sendToLeftScreen(b);
-                        screenObjects.remove(b);
+//                        screenObjects.remove(b);
                     } else {
                         speed.x = -speed.x;
                     }
