@@ -18,7 +18,8 @@ public class NettyBooFinder {
     DatagramSocket responseDatagramSocket;
     DatagramPacket pingingPacket;
     DatagramPacket listeningPacket;
-    byte[] buffer;
+    byte[] pingBuffer;
+    byte[] listenBuffer;
     boolean killThread = false;
 
     public NettyBooFinder() {
@@ -26,7 +27,10 @@ public class NettyBooFinder {
             this.cqMulticastSocket = new MulticastSocket(CQ_PORT);
             this.cqMulticastSocket.joinGroup(InetAddress.getByName(MULTICAST_GROUP_ADDRESS));
             this.responseDatagramSocket = new DatagramSocket(RESPONSE_PORT);
-            this.buffer = new byte[1024];
+            this.pingBuffer = new byte[1024];
+            this.listenBuffer = new byte[1024];
+            this.pingingPacket = new DatagramPacket(this.pingBuffer, this.pingBuffer.length);
+            this.listeningPacket = new DatagramPacket(this.listenBuffer, this.listenBuffer.length);
             this.listenForBroadcasts();
         } catch (IOException e) {
             e.printStackTrace();
@@ -35,8 +39,8 @@ public class NettyBooFinder {
 
     public void findMoreNettyBoos(final DefaultListModel data) {
         try {
-            this.buffer = MULTICAST_CQ.getBytes();
-            this.pingingPacket.setData(this.buffer);
+            this.pingBuffer = MULTICAST_CQ.getBytes();
+            this.pingingPacket.setData(this.pingBuffer);
             this.cqMulticastSocket.send(this.pingingPacket);
             new Thread(new Runnable() {
                 public void run() {
