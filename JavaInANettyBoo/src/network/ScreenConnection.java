@@ -119,9 +119,9 @@ class ScreenConnection extends Thread {
                 /* check for balls being sent */
                 Ball recievedBall = (Ball) serialInputStream.readObject();
                 if(this.left) {
-                    this.gameScreen.addBallFromLeft(recievedBall);
-                } else {
                     this.gameScreen.addBallFromRight(recievedBall);
+                } else {
+                    this.gameScreen.addBallFromLeft(recievedBall);
                 }
             } catch (IOException e) {
                 this.disconnect();
