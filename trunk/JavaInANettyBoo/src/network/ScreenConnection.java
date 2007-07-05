@@ -103,12 +103,8 @@ class ScreenConnection extends Thread {
     /* close a connection to the screen */
     void disconnect() {
         if(this.connected) {
-            try {
-                this.socket.close();
-            } catch (IOException e) {
-                System.err.println(e);
-            }
             this.killThread = true;
+            this.connected = false;
         }
     }
 
