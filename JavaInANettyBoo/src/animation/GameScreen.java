@@ -58,7 +58,7 @@ public class GameScreen extends JFrame {
                 int y1;
 
                 // Get new X
-                if (position.x + speed.x - radius < 0) {
+                if (position.x + speed.x - radius < 0 && speed.x < 0) {
                     x1 = -(position.x + speed.x) + (2 * radius);
                     if (network.isLeftConnected()) {
                         network.sendToLeftScreen(b);
@@ -68,7 +68,7 @@ public class GameScreen extends JFrame {
                     }
                 } else {
                     int screenWidth = getWidth();
-                    if (position.x + speed.x + radius > screenWidth) {
+                    if (position.x + speed.x + radius > screenWidth && speed.x > 0) {
                         x1 = screenWidth - 2 * radius - (speed.x - (screenWidth - position.x));
                         if (network.isRightConnected()) {
                             network.sendToRightScreen(b);
@@ -151,7 +151,7 @@ public class GameScreen extends JFrame {
     }
 
     public void addBallFromRight(Ball recievedBall) {
-        
+
         recievedBall.getPosition().x = getWidth();
         addBall(recievedBall);
     }
