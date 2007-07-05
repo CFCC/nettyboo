@@ -25,7 +25,6 @@ public class Interaction {
             private long timeRelease;
 
             public void mouseClicked(MouseEvent e) {
-
                 if (e.getButton() == e.BUTTON1 && e.getClickCount() == 2) {
 
                     for (final Ball ball : gamescreen.getBalls()) {
@@ -33,14 +32,14 @@ public class Interaction {
                         double y = ball.getPosition().getY() - e.getPoint().getY();
                         double distance = Math.sqrt(x * x + y * y);
                         System.out.println(distance);
-                        if (distance <= ball.getRadius()&&ball.getText()==null) {
+                        if (distance <= ball.getRadius() && ball.getText() == null) {
                             ball.setText(JOptionPane.showInternalInputDialog(
                                     gamescreen.getContentPane(), "Enter new text for ball:"));
                         }
-                        if(ball.getText()!=null&&distance <= ball.getRadius()){
+                        if (ball.getText() != null && distance <= ball.getRadius()) {
                             System.out.println(ball.getText());
                             JOptionPane.showInternalMessageDialog(
-                                    gamescreen.getContentPane(), "The message for this ball is:       "+ball.getText());
+                                    gamescreen.getContentPane(), "The message for this ball is:       " + ball.getText());
                         }
                     }
                 }
