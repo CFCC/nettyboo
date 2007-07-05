@@ -16,7 +16,8 @@ public class NettyBooFinder {
     MulticastSocket cqMulticastSocket;
 
     DatagramSocket responseDatagramSocket;
-    DatagramPacket datagramPacket;
+    DatagramPacket pingingPacket;
+    DatagramPacket listeningPacket;
     byte[] buffer;
     boolean killThread = false;
 
@@ -35,15 +36,15 @@ public class NettyBooFinder {
     void findMoreNettyBoos(final List<String> ipList) {
         try {
             this.buffer = MULTICAST_CQ.getBytes();
-            this.datagramPacket.setData(this.buffer);
-            this.cqMulticastSocket.send(this.datagramPacket);
+            this.pingingPacket.setData(this.buffer);
+            this.cqMulticastSocket.send(this.pingingPacket);
             new Thread(new Runnable() {
                 public void run() {
                     /* Listen for responses */
                     try {
                         while(true) {
-                            responseDatagramSocket.receive(datagramPacket);
-                            ipList.add(datagramPacket.getAddress().toString());
+                            responseDatagramSocket.receive(pingingPacket);
+                            ipList.add(pingingPacket.getAddress().toString());
                             if(killThread) {
                                 return;
                             }
@@ -54,6 +55,8 @@ public class NettyBooFinder {
                     }
                 }
             }).start();
+
+            /* Murder-suicide thread */
             new Thread(new Runnable() {
                 public void run() {
                     try {
@@ -80,7 +83,7 @@ public class NettyBooFinder {
             new Thread(new Runnable() {
                 public void run() {
                     try {
-                        cqMulticastSocket.receive(datagramPacket);
+                        cqMulticastSocket.receive(listeningPacket);
 
                     } catch (IOException e) {
                         e.printStackTrace();
