@@ -44,31 +44,56 @@ public class GameScreen extends JFrame {
             super.paintComponent(gg);
             Graphics2D g = (Graphics2D) gg;
             for (Ball b : getBalls()) {
+                Point position = b.getPosition();
+                int radius = b.getRadius();
+                Point speed = b.getSpeed();
+
                 g.setColor(b.getColor());
-                g.fillOval(b.getPosition().x - b.getRadius(), b.getPosition().y - b.getRadius(), b.getRadius()*2, b.getRadius()*2);
-                if (b.getPosition().y + b.getSpeed().y -b.getRadius() < 0) {
-                    int x1 = b.getPosition().x + b.getSpeed().x;
-                    int y1 = -b.getSpeed().y - b.getPosition().y + 2*b.getRadius() ;
-                    b.getPosition().x = x1;
-                    b.getPosition().y = y1;
-                    b.getSpeed().y = -b.getSpeed().y;
-                } else if (b.getPosition().y  + b.getSpeed().y + b.getRadius()> getHeight()) {
-                    int x1 = b.getPosition().x + b.getSpeed().x;
-                    int y1 = getHeight() - 2* b.getRadius() - (b.getSpeed().y - (getHeight() - b.getPosition().y)) ;
-                    b.getPosition().x = x1;
-                    b.getPosition().y = y1;
-                    b.getSpeed().y = -b.getSpeed().y;
-                } else {
-                    int x1 = b.getPosition().x + b.getSpeed().x;
-                    int y1 = b.getPosition().y + b.getSpeed().y;
-                    b.setPosition(new Point(x1, y1));
-                    if(b.getPosition().x < 0) {
+                g.fillOval(position.x - radius, position.y - radius, radius * 2, radius * 2);
+
+                int x1;
+                int y1;
+
+                // Get new X
+                if (position.x + speed.x - radius < 0) {
+                    x1 = -(position.x + speed.x) + (2 * radius);
+                    if (network.isLeftConnected()) {
                         network.sendToLeftScreen(b);
+                    } else {
+                        speed.x = -speed.x;
                     }
-                    if(b.getPosition().x > getWidth()) {
-                        network.sendToRightScreen(b);
+                } else {
+                    int screenWidth = getWidth();
+                    if (position.x + speed.x + radius > screenWidth) {
+                        x1 = screenWidth - 2 * radius - (speed.x - (screenWidth - position.x));
+                        speed.x = -speed.x;
+                    } else {
+                        x1 = position.x + speed.x;
                     }
                 }
+
+                // Get New Y
+                if (position.y + speed.y - radius < 0) {
+                    y1 = -(position.y + speed.y) + (2 * radius);
+                    speed.y = -speed.y;
+                } else {
+                    int screenHeight = getHeight();
+                    if (position.y + speed.y + radius > screenHeight) {
+                        y1 = screenHeight - 2 * radius - (speed.y - (screenHeight - position.y));
+                        speed.y = -speed.y;
+                    } else {
+                        y1 = position.y + speed.y;
+                    }
+                }
+
+                // Update position with new values
+                position.x = x1;
+                // position is where the ball is
+                // position.y is where the ball is on the y plane
+                // this line means "change position.y to y1"
+                // change where the ball is on the y plane to y1
+                // move the ball to whatever number y1 is
+                position.y = y1;
             }
         }
     };
@@ -77,7 +102,7 @@ public class GameScreen extends JFrame {
         this.network = new Network(this);
         gameScreenHolder.add(screen);
         add(mainPanel);
-        new Timer(1000 / 30, new ActionListener() {
+        new Timer(1000 / 60, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 repaint();
             }
@@ -103,7 +128,7 @@ public class GameScreen extends JFrame {
         GameScreen gameScreen = new GameScreen();
 
         new Interaction(gameScreen);
-        
+
         gameScreen.setSize(1280, 800);
         gameScreen.screen.setBackground(Color.black);
         gameScreen.setVisible(true);
