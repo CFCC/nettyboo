@@ -44,7 +44,9 @@ public class NettyBooFinder {
                     try {
                         while(true) {
                             responseDatagramSocket.receive(pingingPacket);
-                            ipList.add(pingingPacket.getAddress().toString());
+                            if(pingingPacket.getData().toString().equals(CQ_RESPONSE)) {
+                                ipList.add(pingingPacket.getAddress().toString());
+                            }
                             if(killThread) {
                                 return;
                             }
@@ -74,56 +76,21 @@ public class NettyBooFinder {
         }
     }
 
-    /* send and recieve multicast packets */
     void listenForBroadcasts() {
-        /*try {
-
-            /*DatagramSocket responseSocket = new DatagramSocket(RESPONSE_PORT);*/
-
-            new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        cqMulticastSocket.receive(listeningPacket);
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
+        /* start thread to listen for pings and respond to each */
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    cqMulticastSocket.receive(listeningPacket);
+                    if(listeningPacket.getData().toString().equals(MULTICAST_CQ)) {
+                        listeningPacket.setData(CQ_RESPONSE.getBytes());
+                        responseDatagramSocket.connect(listeningPacket.getSocketAddress());
+                        responseDatagramSocket.send(listeningPacket);
                     }
-                    /* Listen for breadcasts
-                    try {
-                        List<String> cqList = new ArrayList<String>();
-                        byte[] buffer = new byte[1024];
-                        DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length);
-                        //multicastSocket.receive(datagramPacket);
-                        if(datagramPacket.getData().toString().equals(MULTICAST_CQ)) {
-                            buffer = CQ_RESPONSE.getBytes();
-                            datagramPacket.getSocketAddress();
-                            datagramPacket.setData(buffer);
-                        }
-                    } catch (IOException e) {
-                        System.err.println(e);
-                        e.printStackTrace();
-                    }*/
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            }).start();
-
-
-            /* Breadcast
-            try {
-                SocketAddress address = new InetSocketAddress("255.255.255.255", CQ_PORT);
-                byte[] buffer = MULTICAST_CQ.getBytes();
-                DatagramPacket datagramPacket = new DatagramPacket(buffer,buffer.length,address);
-                //multicastSocket.send(datagramPacket);
-
-            } catch (SocketException e) {
-                System.err.println(e);
-                e.printStackTrace();
-            } catch (IOException e) {
-                System.err.println(e);
-                e.printStackTrace();
-            }*/
-        /*} catch (IOException e) {
-            System.err.println(e);
-            e.printStackTrace();
-        }*/
+            }
+        }).start();
     }
 }
