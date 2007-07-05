@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -74,7 +75,7 @@ public class Interaction {
                         ball.setSpeed(new Point(xMoved, yMoved));
                     }
                 }
-                if (e.getButton() == MouseEvent.BUTTON3) {
+                if (e.getButton() == MouseEvent.BUTTON3 || (e.getModifiers() & KeyEvent.CTRL_MASK) != 0) {
                     int alg = (int) (.1 * elapsedTime);
                     System.out.println(alg);
                     gamescreen.addBall(new Ball(Color.yellow, new Point(xMoved, yMoved), downPoint, alg));
