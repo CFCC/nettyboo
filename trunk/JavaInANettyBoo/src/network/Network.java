@@ -19,15 +19,15 @@ public class Network {
 
     public Network(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
-        this.leftScreen = new ScreenConnection(this, gameScreen);
-        this.rightScreen = new ScreenConnection(this, gameScreen);
+        this.leftScreen = new ScreenConnection(gameScreen);
+        this.rightScreen = new ScreenConnection(gameScreen);
         this.startServerThread();
     }
 
     /* -----make a client connection to a server */
     public void connectToServer(String side, String ipAddress) {
         if(ipAddress != null) {
-            ScreenConnection remoteScreen = new ScreenConnection(this, gameScreen);
+            ScreenConnection remoteScreen = new ScreenConnection(gameScreen);
             remoteScreen.attemptServerConnection(side, ipAddress);
             if(remoteScreen.isLeft()) {
                 this.leftScreen = remoteScreen;
@@ -49,7 +49,7 @@ public class Network {
                     System.out.println("Server listening...");
                     while(true) {
                         Socket clientSocket = this.serverListeningSocket.accept();
-                        ScreenConnection remoteScreen = new ScreenConnection(Network.this, gameScreen);
+                        ScreenConnection remoteScreen = new ScreenConnection(gameScreen);
                         remoteScreen.attemptClientConnection(clientSocket);
                         if(remoteScreen.isLeft()) {
                             leftScreen.disconnect();
@@ -60,7 +60,7 @@ public class Network {
                         }
                     }
                 } catch (IOException e) {
-                    System.err.println(e);
+                    e.printStackTrace();
                 }
             }
         }).start();
@@ -81,5 +81,4 @@ public class Network {
     public void sendToRightScreen(Ball ball) {
         this.rightScreen.sendScreenObject(ball);
     }
-
 }
