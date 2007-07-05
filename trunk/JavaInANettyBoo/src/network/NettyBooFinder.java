@@ -27,12 +27,13 @@ public class NettyBooFinder {
             this.cqMulticastSocket.joinGroup(InetAddress.getByName(MULTICAST_GROUP_ADDRESS));
             this.responseDatagramSocket = new DatagramSocket(RESPONSE_PORT);
             this.buffer = new byte[1024];
+            this.listenForBroadcasts();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    void findMoreNettyBoos(final DefaultListModel data) {
+    public void findMoreNettyBoos(final DefaultListModel data) {
         try {
             this.buffer = MULTICAST_CQ.getBytes();
             this.pingingPacket.setData(this.buffer);
@@ -43,6 +44,7 @@ public class NettyBooFinder {
                         /* Listen for responses */
                         while(true) {
                             responseDatagramSocket.receive(pingingPacket);
+                            System.out.println("recieved response: " + pingingPacket.getData().toString());
                             if(pingingPacket.getData().toString().equals(CQ_RESPONSE)) {
                                 data.addElement(pingingPacket.getAddress().toString());
                             }
@@ -78,6 +80,7 @@ public class NettyBooFinder {
             public void run() {
                 try {
                     cqMulticastSocket.receive(listeningPacket);
+                    System.out.println("recieved ping: " + listeningPacket.getData().toString());
                     if(listeningPacket.getData().toString().equals(MULTICAST_CQ)) {
                         listeningPacket.setData(CQ_RESPONSE.getBytes());
                         responseDatagramSocket.connect(listeningPacket.getSocketAddress());
