@@ -39,12 +39,15 @@ public class NettyBooFinder {
 
     public void findMoreNettyBoos(final DefaultListModel data) {
         try {
+            this.pingingPacket.setAddress(InetAddress.getByName("255.255.255.255"));
             this.pingingPacket.setData(MULTICAST_CQ.getBytes());
+            System.out.println("sent CQ...");
             this.cqMulticastSocket.send(this.pingingPacket);
             new Thread(new Runnable() {
                 public void run() {
                     try {
                         /* Listen for responses */
+                        System.out.println("listening for pings...");
                         while(true) {
                             responseDatagramSocket.receive(pingingPacket);
                             System.out.println("recieved response: " + pingingPacket.getData().toString());
@@ -67,6 +70,7 @@ public class NettyBooFinder {
                     try {
                         Thread.sleep(2000);
                         killThread = true;
+                        System.out.println("murder-suicide thread");
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -82,12 +86,14 @@ public class NettyBooFinder {
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    cqMulticastSocket.receive(listeningPacket);
-                    System.out.println("recieved ping: " + listeningPacket.getData().toString());
-                    if(listeningPacket.getData().toString().equals(MULTICAST_CQ)) {
-                        listeningPacket.setData(CQ_RESPONSE.getBytes());
-                        responseDatagramSocket.connect(listeningPacket.getSocketAddress());
-                        responseDatagramSocket.send(listeningPacket);
+                    while(true) {
+                        cqMulticastSocket.receive(listeningPacket);
+                        System.out.println("recieved ping: " + listeningPacket.getData().toString());
+                        if(listeningPacket.getData().toString().equals(MULTICAST_CQ)) {
+                            listeningPacket.setData(CQ_RESPONSE.getBytes());
+                            responseDatagramSocket.connect(listeningPacket.getSocketAddress());
+                            responseDatagramSocket.send(listeningPacket);
+                        }
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
