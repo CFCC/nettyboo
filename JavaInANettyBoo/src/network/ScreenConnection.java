@@ -18,13 +18,11 @@ class ScreenConnection extends Thread {
     private ObjectOutputStream serialOutputStream;
     private ObjectInputStream serialInputStream;
     private boolean connected;
-    private Boolean left = null;
+    private boolean left;
     private boolean killThread;
-    private Network network;
     private GameScreen gameScreen;
 
-    public ScreenConnection(Network network, GameScreen gameScreen) {
-        this.network = network;
+    public ScreenConnection(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
     }
 
@@ -44,11 +42,7 @@ class ScreenConnection extends Thread {
             this.serialInputStream = new ObjectInputStream(this.socket.getInputStream());
             String clientString = (String)this.serialInputStream.readObject();
             if (clientString.startsWith(REQUEST_CONNECTION)) {
-                if(clientString.endsWith("right")) {
-                    this.left = true;
-                } else {
-                    this.left = false;
-                }
+                this.left = clientString.endsWith("right");
                 System.out.println("Accepted connection to " + socket.getInetAddress().toString());
                 this.serialOutputStream.writeObject(ACCEPTED_CONNECTION);
                 this.connected = true;
@@ -56,9 +50,9 @@ class ScreenConnection extends Thread {
                 return true;
             }
         } catch (IOException e) {
-            System.err.println(e);
+            e.printStackTrace();
         } catch (ClassNotFoundException e) {
-            System.err.println(e);
+            e.printStackTrace();
         }
         return true;
     }
@@ -66,11 +60,7 @@ class ScreenConnection extends Thread {
     /* attempt to connect to another program's listenForClients */
     boolean attemptServerConnection(String side, String ipAddress) {
         try {
-            if(side.equalsIgnoreCase("left")) {
-                this.left = true;
-            } else {
-                this.left = false;
-            }
+            this.left = side.equalsIgnoreCase("left");
             this.socket = new Socket(ipAddress, 2000);
             this.serialOutputStream = new ObjectOutputStream(this.socket.getOutputStream());
             this.serialInputStream = new ObjectInputStream(this.socket.getInputStream());
@@ -90,11 +80,11 @@ class ScreenConnection extends Thread {
                 return true;
             }
         } catch (IOException e) {
-            System.err.println(e);
+            e.printStackTrace();
             this.connected = false;
             return false;
         } catch (ClassNotFoundException e) {
-            System.err.println(e);
+            e.printStackTrace();
             this.connected = false;
             return false;
         }
@@ -112,7 +102,7 @@ class ScreenConnection extends Thread {
         try {
             serialOutputStream.writeObject(screenObject);
         } catch (IOException e) {
-            System.err.println(e);
+            e.printStackTrace();
         }
     }
 
@@ -128,10 +118,10 @@ class ScreenConnection extends Thread {
                 }
             } catch (IOException e) {
                 this.disconnect();
-                System.err.println(e);
+                e.printStackTrace();
             } catch (ClassNotFoundException e) {
                 this.disconnect();
-                System.err.println(e);
+                e.printStackTrace();
             }
             if(this.killThread) {
                 return;

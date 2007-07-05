@@ -13,8 +13,8 @@ public class NettyBooFinder {
     private static final String MULTICAST_GROUP_ADDRESS = "225.0.0.27";
     private static final String CQ_RESPONSE = "I'm here!";
     private static final int RESPONSE_PORT = 12345;
-    MulticastSocket cqMulticastSocket;
 
+    MulticastSocket cqMulticastSocket;
     DatagramSocket responseDatagramSocket;
     DatagramPacket pingingPacket;
     DatagramPacket listeningPacket;
@@ -28,7 +28,6 @@ public class NettyBooFinder {
             this.responseDatagramSocket = new DatagramSocket(RESPONSE_PORT);
             this.buffer = new byte[1024];
         } catch (IOException e) {
-            System.err.println(e);
             e.printStackTrace();
         }
     }
@@ -40,8 +39,8 @@ public class NettyBooFinder {
             this.cqMulticastSocket.send(this.pingingPacket);
             new Thread(new Runnable() {
                 public void run() {
-                    /* Listen for responses */
                     try {
+                        /* Listen for responses */
                         while(true) {
                             responseDatagramSocket.receive(pingingPacket);
                             if(pingingPacket.getData().toString().equals(CQ_RESPONSE)) {
@@ -52,7 +51,6 @@ public class NettyBooFinder {
                             }
                         }
                     } catch (IOException e) {
-                        System.err.println(e);
                         e.printStackTrace();
                     }
                 }
@@ -65,13 +63,11 @@ public class NettyBooFinder {
                         Thread.sleep(2000);
                         killThread = true;
                     } catch (InterruptedException e) {
-                        System.err.println(e);
                         e.printStackTrace();
                     }
                 }
             }).start();
         } catch (IOException e) {
-            System.err.println(e);
             e.printStackTrace();
         }
     }
