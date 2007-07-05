@@ -141,4 +141,16 @@ public class GameScreen extends JFrame {
         gameScreen.screen.setBackground(Color.black);
         gameScreen.setVisible(true);
     }
+
+    public void addBallFromLeft(Ball recievedBall) {
+        recievedBall.getPosition().x = 0;
+        addBall(recievedBall);
+
+    }
+
+    public void addBallFromRight(Ball recievedBall) {
+        
+        recievedBall.getPosition().x = getWidth();
+        addBall(recievedBall);
+    }
 }
