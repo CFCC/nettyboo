@@ -62,6 +62,12 @@ public class GameScreen extends JFrame {
                     int x1 = b.getPosition().x + b.getSpeed().x;
                     int y1 = b.getPosition().y + b.getSpeed().y;
                     b.setPosition(new Point(x1, y1));
+                    if(b.getPosition().x < 0) {
+                        network.sendToLeftScreen(b);
+                    }
+                    if(b.getPosition().x > getWidth()) {
+                        network.sendToRightScreen(b);
+                    }
                 }
             }
         }
