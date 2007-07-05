@@ -6,11 +6,11 @@ import animation.GameScreen;
 import javax.swing.JOptionPane;
 import java.awt.Color;
 import java.awt.Point;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.KeyEvent;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Interaction {
     GameScreen gamescreen;
@@ -38,6 +38,10 @@ public class Interaction {
                                     gamescreen.getContentPane(), "Enter new text for ball:"));
                         }
                         if (ball.getText() != null && distance <= ball.getRadius()) {
+                            if(ball.getText().equalsIgnoreCase("Poopenheimer")||ball.getText().equalsIgnoreCase("David")){
+                                JOptionPane.showInternalMessageDialog(gamescreen.getContentPane(),"LOL ^___________________^");
+                                break;
+                            }
                             System.out.println(ball.getText());
                             JOptionPane.showInternalMessageDialog(
                                     gamescreen.getContentPane(), "The message for this ball is:       " + ball.getText());
