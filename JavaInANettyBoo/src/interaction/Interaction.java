@@ -21,6 +21,8 @@ public class Interaction {
             private Point downPoint;
             private Point upPoint;
             private List<Ball> list=new ArrayList<Ball>();
+            private long timePress;
+            private long timeRelease;
 
             public void mouseClicked(MouseEvent e) {
                 
@@ -40,6 +42,7 @@ public class Interaction {
             }
 
             public void mousePressed(MouseEvent e) {
+                timePress=System.currentTimeMillis();
                 if (e.getButton() == e.BUTTON1) {
                     list.clear();
                     for (Ball ball : gamescreen.getBalls()) {
@@ -57,6 +60,8 @@ public class Interaction {
             }
 
             public void mouseReleased(MouseEvent e) {
+                timeRelease=System.currentTimeMillis();
+                long elapsedTime=timeRelease-timePress;
                 upPoint = e.getPoint();
                 int xMoved = upPoint.x - downPoint.x;
                 int yMoved = upPoint.y - downPoint.y;
@@ -66,7 +71,9 @@ public class Interaction {
                     }
                 }
                 if (e.getButton() == MouseEvent.BUTTON3) {
-                    gamescreen.addBall(new Ball(Color.yellow, new Point(xMoved, yMoved), downPoint, 50));
+                    int alg=(int) (.1*elapsedTime);
+                    System.out.println(alg);
+                    gamescreen.addBall(new Ball(Color.yellow, new Point(xMoved, yMoved), downPoint,alg ));
                 }
             }
         });
