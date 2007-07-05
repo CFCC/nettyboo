@@ -1,11 +1,11 @@
 package network;
 
+import javax.swing.DefaultListModel;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
-import java.util.List;
 
 public class NettyBooFinder {
     private static final String MULTICAST_CQ = "JavaInANettyBoo CQ";
@@ -32,7 +32,7 @@ public class NettyBooFinder {
         }
     }
 
-    void findMoreNettyBoos(final List<String> ipList) {
+    void findMoreNettyBoos(final DefaultListModel data) {
         try {
             this.buffer = MULTICAST_CQ.getBytes();
             this.pingingPacket.setData(this.buffer);
@@ -44,7 +44,7 @@ public class NettyBooFinder {
                         while(true) {
                             responseDatagramSocket.receive(pingingPacket);
                             if(pingingPacket.getData().toString().equals(CQ_RESPONSE)) {
-                                ipList.add(pingingPacket.getAddress().toString());
+                                data.addElement(pingingPacket.getAddress().toString());
                             }
                             if(killThread) {
                                 return;
