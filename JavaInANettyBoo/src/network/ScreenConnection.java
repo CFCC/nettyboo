@@ -61,7 +61,7 @@ class ScreenConnection extends Thread {
     /* attempt to connect to another program's listenForClients */
     boolean attemptServerConnection(String side, String ipAddress) {
         try {
-            if(side.equalsIgnoreCase("left")) {
+            if(side.equalsIgnoreCase("right")) {
                 this.left = true;
             }
             this.socket = new Socket(ipAddress, 2000);
