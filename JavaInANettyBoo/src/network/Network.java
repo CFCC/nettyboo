@@ -13,11 +13,13 @@ public class Network {
     private ScreenConnection leftScreen;
     private ScreenConnection rightScreen;
     private GameScreen gameScreen;
+    public NettyBooFinder nettyBooFinder;
 
     public Network(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
         this.leftScreen = new ScreenConnection(gameScreen);
         this.rightScreen = new ScreenConnection(gameScreen);
+        this.nettyBooFinder = new NettyBooFinder();
         this.startServerThread();
     }
 

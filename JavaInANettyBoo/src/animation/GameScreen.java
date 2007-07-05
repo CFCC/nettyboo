@@ -127,6 +127,7 @@ public class GameScreen extends JFrame {
                 ipSelector.setSize(300, 300);
                 ipSelector.setMinimumSize(new Dimension(300, 300));
                 ipSelector.setPreferredSize(new Dimension(300, 300));
+                network.nettyBooFinder.findMoreNettyBoos(data);
                 JOptionPane.showInternalMessageDialog(getContentPane(),
                         ipSelector);
                 network.connectToServer("left", (String) ipSelector.getSelectedValue());
