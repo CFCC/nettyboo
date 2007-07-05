@@ -30,9 +30,9 @@ public class Network {
             ScreenConnection remoteScreen = new ScreenConnection(this, gameScreen);
             remoteScreen.attemptServerConnection(side, ipAddress);
             if(remoteScreen.isLeft()) {
-                this.leftScreen = remoteScreen;
-            } else {
                 this.rightScreen = remoteScreen;
+            } else {
+                this.leftScreen = remoteScreen;
             }
         }
     }
