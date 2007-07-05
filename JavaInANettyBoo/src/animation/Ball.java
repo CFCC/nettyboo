@@ -12,7 +12,7 @@ public class Ball extends ScreenObject {
         super(speed, position);
         this.color = color;
         this.radius = radius;
-        this.text= "";
+        this.text= null;
     }
 
     public int getRadius() {
