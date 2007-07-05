@@ -18,7 +18,7 @@ class ScreenConnection extends Thread {
     private ObjectOutputStream serialOutputStream;
     private ObjectInputStream serialInputStream;
     private boolean connected;
-    private boolean left;
+    private Boolean left = null;
     private boolean killThread;
     private Network network;
     private GameScreen gameScreen;
@@ -32,7 +32,7 @@ class ScreenConnection extends Thread {
         return connected;
     }
 
-    public boolean isLeft() {
+    public Boolean isLeft() {
         return left;
     }
 
@@ -44,6 +44,11 @@ class ScreenConnection extends Thread {
             this.serialInputStream = new ObjectInputStream(this.socket.getInputStream());
             String clientString = (String)this.serialInputStream.readObject();
             if (clientString.startsWith(REQUEST_CONNECTION)) {
+                if(clientString.endsWith("right")) {
+                    this.left = true;
+                } else {
+                    this.left = false;
+                }
                 System.out.println("Accepted connection to " + socket.getInetAddress().toString());
                 this.serialOutputStream.writeObject(ACCEPTED_CONNECTION);
                 this.connected = true;
@@ -63,6 +68,8 @@ class ScreenConnection extends Thread {
         try {
             if(side.equalsIgnoreCase("left")) {
                 this.left = true;
+            } else {
+                this.left = false;
             }
             this.socket = new Socket(ipAddress, 2000);
             this.serialOutputStream = new ObjectOutputStream(this.socket.getOutputStream());
