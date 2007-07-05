@@ -136,7 +136,7 @@ public class GameScreen extends JFrame {
 
     public static void main(String[] args) {
         GameScreen gameScreen = new GameScreen();
-
+        gameScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         new Interaction(gameScreen);
 
         gameScreen.setSize(1280, 800);
