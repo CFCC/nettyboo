@@ -81,20 +81,22 @@ public class GameScreen extends JFrame {
                 int y1;
 
                 // Get new X
-                if (position.x + speed.x - radius < 0 && speed.x < 0) {
+                if (position.x + speed.x - radius < 0 && speed.x < 0 && !b.isDead()) {
                     x1 = -(position.x + speed.x) + (2 * radius);
                     if (network.isLeftConnected()) {
                         network.sendToLeftScreen(b);
+                        b.setDead(true);
                         //screenObjects.remove(b);
                     } else {
                         speed.x = -speed.x;
                     }
                 } else {
                     int screenWidth = getWidth();
-                    if (position.x + speed.x + radius > screenWidth && speed.x > 0) {
+                    if (position.x + speed.x + radius > screenWidth && speed.x > 0 && !b.isDead()) {
                         x1 = screenWidth - 2 * radius - (speed.x - (screenWidth - position.x));
                         if (network.isRightConnected()) {
                             network.sendToRightScreen(b);
+                            b.setDead(true);
                             //screenObjects.remove(b);
                         } else {
                             speed.x = -speed.x;
