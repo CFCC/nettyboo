@@ -10,15 +10,22 @@ import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Interaction {
     GameScreen gamescreen;
+    private Point currentMouseLocation = new Point(0, 0);
 
     public Interaction(GameScreen screen) {
         this.gamescreen = screen;
 
+        gamescreen.screen.addMouseMotionListener(new MouseMotionAdapter() {
+            public void mouseMoved(MouseEvent e) {
+                currentMouseLocation = e.getPoint();
+            }
+        });
         gamescreen.screen.addMouseListener(new MouseAdapter() {
             private Point downPoint;
             private Point upPoint;
@@ -94,5 +101,9 @@ public class Interaction {
                 }
             }
         });
+    }
+
+    public Point getCurrentMouseLocation() {
+        return currentMouseLocation;
     }
 }
