@@ -40,6 +40,8 @@ public class GameScreen extends JFrame {
     private Cursor defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
     private Cursor handCursor = new Cursor(Cursor.HAND_CURSOR);
 
+    private N00bPwner n00bpwner = new N00bPwner(this);
+
     public List<Ball> getBalls() {
         List<Ball> list = new ArrayList<Ball>();
         for (ScreenObject ball : screenObjects) {
@@ -59,15 +61,21 @@ public class GameScreen extends JFrame {
             super.paintComponent(gg);
             Graphics2D g = (Graphics2D) gg;
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            for (Ball b : getBalls()) {
+            List<Ball> balls = getBalls();
+            for (Ball b : balls) {
                 Point position = b.getPosition();
                 int radius = b.getRadius();
-                Point speed = b.getSpeed();
 
                 g.setColor(b.getColor());
                 g.fillOval(position.x - radius, position.y - radius, radius * 2, radius * 2);
 
                 updateCursor();
+            }
+            n00bpwner.pwn(g);
+            for (Ball b : balls) {
+                Point position = b.getPosition();
+                int radius = b.getRadius();
+                Point speed = b.getSpeed();
 
                 int x1;
                 int y1;
