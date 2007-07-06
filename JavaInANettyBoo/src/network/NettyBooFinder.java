@@ -12,7 +12,7 @@ public class NettyBooFinder {
     private static final int CQ_PORT = 13246;
     private static final String MULTICAST_GROUP_ADDRESS = "225.0.0.27";
     private static final String CQ_RESPONSE = "I'm here!";
-    private static final int RESPONSE_PORT = 12345;
+    private static final int RESPONSE_PORT = 61802;
 
     MulticastSocket cqMulticastSocket;      /* for sending and recieving pings */
     DatagramSocket responseDatagramSocket;  /* for sending responses to pings */
