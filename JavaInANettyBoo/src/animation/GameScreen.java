@@ -3,10 +3,8 @@ package animation;
 import interaction.Interaction;
 import network.Network;
 
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
@@ -14,7 +12,6 @@ import javax.swing.Timer;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -191,7 +188,7 @@ public class GameScreen extends JFrame {
         }).start();
         leftComputerLinkButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                DefaultListModel data = new DefaultListModel();
+                /*DefaultListModel data = new DefaultListModel();
                 JList ipSelector = new JList(data);
                 ipSelector.setSize(300, 300);
                 ipSelector.setMinimumSize(new Dimension(300, 300));
@@ -199,13 +196,13 @@ public class GameScreen extends JFrame {
                 network.nettyBooFinder.findMoreNettyBoos(data);
                 JOptionPane.showInternalMessageDialog(getContentPane(),
                         ipSelector);
-                network.connectToServer("left", (String) ipSelector.getSelectedValue());
-                //network.connectToServer("left", JOptionPane.showInternalInputDialog(getContentPane(), "IP address for left computer?"));
+                network.connectToServer("left", (String) ipSelector.getSelectedValue());*/
+                network.connectToServer("left", JOptionPane.showInternalInputDialog(getContentPane(), "IP address for left computer?"));
             }
         });
         rightComputerLinkButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                DefaultListModel data = new DefaultListModel();
+                /*DefaultListModel data = new DefaultListModel();
                 JList ipSelector = new JList(data);
                 ipSelector.setSize(300, 300);
                 ipSelector.setMinimumSize(new Dimension(300, 300));
@@ -213,8 +210,8 @@ public class GameScreen extends JFrame {
                 network.nettyBooFinder.findMoreNettyBoos(data);
                 JOptionPane.showInternalMessageDialog(getContentPane(),
                         ipSelector);
-                network.connectToServer("right", (String) ipSelector.getSelectedValue());
-                //network.connectToServer("right", JOptionPane.showInternalInputDialog(getContentPane(), "IP address for right computer?"));
+                network.connectToServer("right", (String) ipSelector.getSelectedValue());*/
+                network.connectToServer("right", JOptionPane.showInternalInputDialog(getContentPane(), "IP address for right computer?"));
             }
         });
         setMode(ClickMode.BALL);
