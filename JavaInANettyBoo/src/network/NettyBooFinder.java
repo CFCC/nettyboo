@@ -20,6 +20,7 @@ public class NettyBooFinder {
     private static final int RESPONSE_PORT = 61802;
 
     private MulticastSocket cqMulticastSocket;      /* for sending and recieving pings */
+    private DatagramSocket responseListeningSocket;
     private boolean killThread = false;
     private long timeOfLastMulticastReception;
     private InetAddress lastMulticastSender;
@@ -28,6 +29,7 @@ public class NettyBooFinder {
         try {
             this.cqMulticastSocket = new MulticastSocket(CQ_PORT);
             this.cqMulticastSocket.joinGroup(InetAddress.getByName(MULTICAST_GROUP_ADDRESS));
+            this.responseListeningSocket = new DatagramSocket(RESPONSE_PORT);
             this.listenForBroadcasts();
         } catch (IOException e) {
             e.printStackTrace();
@@ -65,7 +67,6 @@ public class NettyBooFinder {
                     try {
                         /* Listen for responses */
                         System.out.println("listening for pings...");
-                        DatagramSocket responseListeningSocket = new DatagramSocket(RESPONSE_PORT);
                         while(true) {
                             responseListeningSocket.receive(pingingPacket);
                             String responseString = new String(pingingPacket.getData(), pingingPacket.getOffset(), pingingPacket.getLength());
@@ -77,8 +78,6 @@ public class NettyBooFinder {
                                 break;
                             }
                         }
-                        responseListeningSocket.close();
-
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
