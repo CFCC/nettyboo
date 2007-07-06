@@ -66,13 +66,13 @@ public class NettyBooFinder {
                 public void run() {
                     try {
                         /* Listen for responses */
-                        System.out.println("listening for pings...");
+                        System.out.println("listening for responses...");
                         while(true) {
                             responseListeningSocket.receive(pingingPacket);
                             String responseString = new String(pingingPacket.getData(), pingingPacket.getOffset(), pingingPacket.getLength());
                             System.out.println("recieved response: " + responseString);
                             if(responseString.equals(CQ_RESPONSE)) {
-                                data.addElement(pingingPacket.getAddress().getHostAddress());
+                                data.addElement(pingingPacket.getAddress().getHostName());
                             }
                             if(killThread) {
                                 break;
@@ -105,7 +105,7 @@ public class NettyBooFinder {
         /* start thread to listen for pings and respond to each */
         new Thread(new Runnable() {
             public void run() {
-                System.out.println("broadcast listener started");
+                System.out.println("listening for pings...");
                 Set<InetAddress> ipList = getLocalIPAddresses();
                 try {
                     while(true) {
