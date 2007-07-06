@@ -6,36 +6,41 @@ import animation.Sounder;
 
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
+import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Interaction {
-    GameScreen gamescreen;
+    private Point downPoint;
+    private List<Ball> list = new ArrayList<Ball>();
+    private Ball newBall = null;
+
+    private GameScreen gamescreen;
     private Point currentMouseLocation = new Point(0, 0);
 
     public Interaction(GameScreen screen) {
         this.gamescreen = screen;
 
-        gamescreen.screen.addMouseMotionListener(new MouseMotionAdapter() {
+        gamescreen.screen.addMouseMotionListener(new MouseMotionListener() {
+            public void mouseDragged(MouseEvent e) {
+                currentMouseLocation = e.getPoint();
+            }
+
             public void mouseMoved(MouseEvent e) {
                 currentMouseLocation = e.getPoint();
             }
         });
         gamescreen.screen.addMouseListener(new MouseAdapter() {
-            private Point downPoint;
-            private Point upPoint;
-            private List<Ball> list = new ArrayList<Ball>();
             private long timePress;
-            private long timeRelease;
-            public Ball newBall = null;
             private Timer timer;
 
             public void mouseClicked(MouseEvent e) {
@@ -93,15 +98,16 @@ public class Interaction {
             }
 
             public void mouseReleased(MouseEvent e) {
-                timeRelease = System.currentTimeMillis();
+                long timeRelease = System.currentTimeMillis();
                 long elapsedTime = timeRelease - timePress;
-                upPoint = e.getPoint();
+                Point upPoint = e.getPoint();
                 int xMoved = upPoint.x - downPoint.x;
                 int yMoved = upPoint.y - downPoint.y;
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     for (Ball ball : list) {
                         ball.setSpeed(new Point(xMoved, yMoved));
                     }
+                    list.clear();
                 }
                 if (newBall != null && isRightButton(e)) {
                     newBall.setRadius((int) (.1 * elapsedTime));
@@ -122,5 +128,13 @@ public class Interaction {
 
     public Point getCurrentMouseLocation() {
         return currentMouseLocation;
+    }
+
+    public void drawSlingshots(Graphics2D g) {
+        if (newBall != null || !list.isEmpty()) {
+            g.setColor(Color.CYAN);
+            g.setStroke(new BasicStroke(2, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+            g.drawLine(downPoint.x, downPoint.y, currentMouseLocation.x, currentMouseLocation.y);
+        }
     }
 }
