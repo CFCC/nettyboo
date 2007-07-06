@@ -4,7 +4,7 @@ import java.awt.*;
 
 public class Ball extends ScreenObject {
     private Color color;
-    private  int radius;
+    private int radius;
 
     private String text;
 
@@ -12,7 +12,7 @@ public class Ball extends ScreenObject {
         super(speed, position);
         this.color = color;
         this.radius = radius;
-        this.text= null;
+        this.text = null;
     }
 
     public int getRadius() {

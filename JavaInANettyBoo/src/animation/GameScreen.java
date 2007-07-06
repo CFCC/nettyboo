@@ -77,7 +77,7 @@ public class GameScreen extends JFrame {
                     x1 = -(position.x + speed.x) + (2 * radius);
                     if (network.isLeftConnected()) {
                         network.sendToLeftScreen(b);
-//                        screenObjects.remove(b);
+                        //screenObjects.remove(b);
                     } else {
                         speed.x = -speed.x;
                     }
@@ -87,7 +87,7 @@ public class GameScreen extends JFrame {
                         x1 = screenWidth - 2 * radius - (speed.x - (screenWidth - position.x));
                         if (network.isRightConnected()) {
                             network.sendToRightScreen(b);
-                            screenObjects.remove(b);
+                            //screenObjects.remove(b);
                         } else {
                             speed.x = -speed.x;
                         }
@@ -217,6 +217,8 @@ public class GameScreen extends JFrame {
         return clickMode;
     }
 
-    public static enum ClickMode { BALL, SOUND }
+    public static enum ClickMode {
+        BALL, SOUND
+    }
 
 }
