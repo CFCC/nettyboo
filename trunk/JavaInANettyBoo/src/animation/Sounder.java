@@ -40,11 +40,13 @@ public class Sounder extends Ball {
 
     private void fillData(byte[] data) {
         int screenWidth = getScreenWidth();
+        double speedMax300 = Math.min(300, getSpeed().distance(0, 0));
+        double radiusMax300 = Math.min(15, Math.sqrt(getRadius()));
         for (int i = 0; i < data.length; i += 2) {
-            int freq = 50 + (300 - Math.min(300, getRadius())) * 5;//(int) (2000 + 1000*(Math.sin(Math.PI * 2 * i / (data.length / 10))));
-            byte blog = square(freq, i);
-            data[i] = (byte) (blog * (screenWidth -getPosition().x) / screenWidth);
-            data[i+1] = (byte) (blog * getPosition().x / screenWidth);
+            int freq = (int) (50 + speedMax300*2);//(int) (2000 + 1000*(Math.sin(Math.PI * 2 * i / (data.length / 10))));
+            byte blog = sine(freq, i);
+            data[i] = (byte) (blog * (screenWidth -getPosition().x) / screenWidth * radiusMax300 / 15);
+            data[i+1] = (byte) (blog * getPosition().x / screenWidth * radiusMax300 / 15);
         }
     }
 
