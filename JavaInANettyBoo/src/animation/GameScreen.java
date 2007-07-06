@@ -20,7 +20,6 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.font.TextLayout;
@@ -82,7 +81,7 @@ public class GameScreen extends JFrame {
         protected void paintComponent(Graphics gg) {
             super.paintComponent(gg);
             Graphics2D g = (Graphics2D) gg;
-            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+//            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             List<Ball> balls = getBalls();
             for (Ball b : balls) {
                 Point position = b.getPosition();
@@ -180,7 +179,7 @@ public class GameScreen extends JFrame {
             TextLayout layout = new TextLayout(str, font, g.getFontRenderContext());
 
             g.setFont(font);
-            g.setColor(new Color(200, 100, 0, 100));
+            g.setColor(new Color(200, 100, 0, 175));
             g.drawString(str, (float) ((screen.getWidth() - layout.getBounds().getWidth()) / 2),
                     (float) (screen.getHeight() / 2 + layout.getBounds().getHeight() / 2));
         }
