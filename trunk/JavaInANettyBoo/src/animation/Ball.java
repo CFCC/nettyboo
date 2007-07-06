@@ -35,4 +35,7 @@ public class Ball extends ScreenObject {
         this.color = color;
     }
 
+    public void setRadius(int radius) {
+        this.radius = radius;
+    }
 }
