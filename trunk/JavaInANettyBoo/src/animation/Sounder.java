@@ -7,6 +7,7 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import java.awt.Point;
 import java.awt.Color;
+import java.util.Arrays;
 
 public class Sounder extends Ball {
     public Sounder(Color color, Point speed, Point position, int radius) {
@@ -39,14 +40,18 @@ public class Sounder extends Ball {
     }
 
     private void fillData(byte[] data) {
-        int screenWidth = getScreenWidth();
         double speedMax300 = Math.min(300, getSpeed().distance(0, 0));
-        double radiusMax300 = Math.min(15, Math.sqrt(getRadius()));
+        if (speedMax300 == 0) {
+            Arrays.fill(data, (byte) 0);
+            return;
+        }
+        int screenWidth = getScreenWidth();
+        double radiusMax15 = Math.min(15, Math.sqrt(getRadius()));
         for (int i = 0; i < data.length; i += 2) {
             int freq = (int) (50 + speedMax300*2);//(int) (2000 + 1000*(Math.sin(Math.PI * 2 * i / (data.length / 10))));
-            byte blog = sine(freq, i);
-            data[i] = (byte) (blog * (screenWidth -getPosition().x) / screenWidth * radiusMax300 / 15);
-            data[i+1] = (byte) (blog * getPosition().x / screenWidth * radiusMax300 / 15);
+            byte blog = square(freq, i);
+            data[i] = (byte) (blog * (screenWidth -getPosition().x) / screenWidth * radiusMax15 / 15);
+            data[i+1] = (byte) (blog * getPosition().x / screenWidth * radiusMax15 / 15);
         }
     }
 
