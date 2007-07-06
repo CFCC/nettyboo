@@ -2,6 +2,7 @@ package animation;
 
 import interaction.Interaction;
 import network.Network;
+import network.NettyBooFinder;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -16,11 +17,16 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.Font;
+import java.awt.font.TextLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.net.InetAddress;
+import java.net.Inet4Address;
 
 /**
  * This class dictates the animation of objects such as what happens when an object hits a
@@ -78,9 +84,12 @@ public class GameScreen extends JFrame {
                 g.fillOval(position.x - radius, position.y - radius, radius * 2, radius * 2);
                 drawHalo(g, interaction.getCurrentMouseLocation(), b);
             }
+
             interaction.drawSlingshots(g);
             updateCursor();
             n00bpwner.pwn(g);
+            showIPIfMulticastReceived(g);
+
             for (Ball b : balls) {
                 Point position = b.getPosition();
                 int radius = b.getRadius();
@@ -141,6 +150,52 @@ public class GameScreen extends JFrame {
             }
         }
     };
+
+    private void showIPIfMulticastReceived(Graphics2D g) {
+        if (System.currentTimeMillis() - network.nettyBooFinder.getTimeOfLastMulticastReception() < 8000) {
+            InetAddress lastSender = network.nettyBooFinder.getLastMulticastSender();
+            Collection<InetAddress> ips = NettyBooFinder.getLocalIPAddresses();
+            if (lastSender != null) {
+                String sender = lastSender.getHostAddress();
+                String prefix = sender.substring(0, sender.lastIndexOf('.')+1);
+                Collection<InetAddress> ipsWithPrefix = findIpsWithPrefix(ips, prefix);
+                if (!ipsWithPrefix.isEmpty()) {
+                    ips = ipsWithPrefix;
+                }
+            }
+            String str = buildIpString(ips);
+            Font font = new Font("blah", Font.BOLD, 200);
+            TextLayout layout = new TextLayout(str, font, g.getFontRenderContext());
+
+            g.setFont(font);
+            g.setColor(new Color(200, 100, 0, 100));
+            g.drawString(str, (float) ((screen.getWidth() - layout.getBounds().getWidth())/2),
+                    (float) (screen.getHeight()/2 + layout.getBounds().getHeight()/2));
+        }
+    }
+
+    private List<InetAddress> findIpsWithPrefix(Collection<InetAddress> ips, String prefix) {
+        List<InetAddress> bestIps = new ArrayList<InetAddress>();
+        for (InetAddress address : ips) {
+            if (address.getHostAddress().startsWith(prefix)) {
+                bestIps.add(address);
+            }
+        }
+        return bestIps;
+    }
+
+    private String buildIpString(Collection<InetAddress> ips) {
+        String str = "";
+        for (InetAddress address : ips) {
+            if (address instanceof Inet4Address && !address.isLoopbackAddress()) {
+                if (!str.equals("")) {
+                    str += "\n";
+                }
+                str += address.getHostAddress();
+            }
+        }
+        return str;
+    }
 
     private void updateCursor() {
         Point p = interaction.getCurrentMouseLocation();
