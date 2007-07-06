@@ -28,9 +28,12 @@ public class Sink extends Ball{
             if (b == this || b instanceof Sink || b.isDead()) continue;
             Point p = b.getPosition();
             double d = position.distance(p);
-            if (d < T){
-                b.speed.x = (int) ((position.x - p.x))/20;/// (T - (d/T) * 20.0));
-                b.speed.y = (int) ((position.y - p.y))/20;// / (T - (d/T) * 20.0 ));
+            /*if (d < T / 2){
+                b.speed.x = (int) ((position.x - p.x)/20);/// (T - (d/T) * 20.0));
+                b.speed.y = (int) ((position.y - p.y)/20);// / (T - (d/T) * 20.0 ));
+            } else*/ if (d < T) {
+                b.speed.x += (int) ((position.x - p.x)/100);/// (T - (d/T) * 20.0));
+                b.speed.y += (int) ((position.y - p.y)/100);// / (T - (d/T) * 20.0 ));
             }
         }
     }
