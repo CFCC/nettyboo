@@ -25,7 +25,7 @@ public class Sink extends Ball{
     public void prepare(List<Ball> balls) {
 
         for(Ball b: balls){
-            if (b == this || b instanceof Sink) continue;
+            if (b == this || b instanceof Sink || b.isDead()) continue;
             Point p = b.getPosition();
             double d = position.distance(p);
             if (d < T){
