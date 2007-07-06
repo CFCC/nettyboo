@@ -7,12 +7,21 @@ public class Ball extends ScreenObject {
     private int radius;
 
     private String text;
+    private boolean dead;
 
     public Ball(Color color, Point speed, Point position, int radius) {
         super(speed, position);
         this.color = color;
         this.radius = radius;
         this.text = null;
+    }
+
+    public boolean isDead() {
+        return dead;
+    }
+
+    public void setDead(boolean dead) {
+        this.dead = dead;
     }
 
     public int getRadius() {
