@@ -47,6 +47,7 @@ public class GameScreen extends JFrame {
     private JToolBar toolbar;
     private JButton ballButton;
     private JButton soundButton;
+    private JButton sinkButton;
     private Network network;
     private Interaction interaction;
     private ClickMode clickMode;
@@ -91,6 +92,7 @@ public class GameScreen extends JFrame {
             showIPIfMulticastReceived(g);
 
             for (Ball b : balls) {
+                b.prepare(balls);
                 Point position = b.getPosition();
                 int radius = b.getRadius();
                 Point speed = b.getSpeed();
@@ -221,13 +223,13 @@ public class GameScreen extends JFrame {
             radius += 5;
             g.setStroke(new BasicStroke(10));
 
-            g.setColor(Color.BLACK);
-            g.drawOval(pos.x - radius, pos.y - radius, radius*2, radius*2);
-
-            radius += 5;
-            g.setStroke(new BasicStroke(6));
             g.setColor(Color.WHITE);
-            g.drawOval(pos.x - radius, pos.y - radius, radius*2, radius*2);
+            g.drawOval(pos.x - radius+1, pos.y - radius+1, radius*2-2, radius*2-2);
+
+//            radius += 5;
+//            g.setStroke(new BasicStroke(6));
+//            g.setColor(Color.WHITE);
+//            g.drawOval(pos.x - radius, pos.y - radius, radius*2, radius*2);
         }
     }
 
@@ -280,6 +282,11 @@ public class GameScreen extends JFrame {
                 setMode(ClickMode.SOUND);
             }
         });
+        sinkButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                setMode(ClickMode.SINK);
+            }
+        });
     }
 
     private void setMode(ClickMode mode) {
@@ -319,7 +326,7 @@ public class GameScreen extends JFrame {
     }
 
     public static enum ClickMode {
-        BALL, SOUND
+        BALL, SINK, SOUND
     }
 
 }
