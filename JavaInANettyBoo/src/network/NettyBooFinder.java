@@ -19,14 +19,13 @@ public class NettyBooFinder {
     private static final String CQ_RESPONSE = "I'm here!";
     private static final int RESPONSE_PORT = 61802;
 
-    MulticastSocket cqMulticastSocket;      /* for sending and recieving pings */
-    DatagramSocket responseDatagramSocket;  /* for sending responses to pings */
-    DatagramSocket responseListeningSocket; /* for recieving resposnes to pings */
-    DatagramPacket pingingPacket;
-    DatagramPacket listeningPacket;
-    byte[] pingBuffer;
-    byte[] listenBuffer;
-    boolean killThread = false;
+    private MulticastSocket cqMulticastSocket;      /* for sending and recieving pings */
+    private DatagramSocket responseDatagramSocket;  /* for sending responses to pings */
+    private DatagramSocket responseListeningSocket; /* for recieving resposnes to pings */
+    //private DatagramPacket pingingPacket;
+    private DatagramPacket listeningPacket;
+    private byte[] pingBuffer;
+    private boolean killThread = false;
 
     public NettyBooFinder() {
         try {
@@ -35,9 +34,9 @@ public class NettyBooFinder {
             this.responseDatagramSocket = new DatagramSocket();
             this.responseListeningSocket = new DatagramSocket(RESPONSE_PORT);
             this.pingBuffer = new byte[1024];
-            this.listenBuffer = new byte[1024];
-            this.pingingPacket = new DatagramPacket(this.pingBuffer, this.pingBuffer.length);
-            this.listeningPacket = new DatagramPacket(this.listenBuffer, this.listenBuffer.length);
+            byte[] listenBuffer = new byte[1024];
+            //this.pingingPacket = new DatagramPacket(this.pingBuffer, this.pingBuffer.length);
+            this.listeningPacket = new DatagramPacket(listenBuffer, listenBuffer.length);
             this.listenForBroadcasts();
         } catch (IOException e) {
             e.printStackTrace();
@@ -63,10 +62,11 @@ public class NettyBooFinder {
 
     public void findMoreNettyBoos(final DefaultListModel data) {
         try {
-            this.pingingPacket.setPort(CQ_PORT);
-            this.pingingPacket.setAddress(InetAddress.getByName("255.255.255.255"));
-            this.pingingPacket.setData(MULTICAST_CQ.getBytes());
-            this.cqMulticastSocket.send(this.pingingPacket);
+            final DatagramPacket pingingPacket = new DatagramPacket(this.pingBuffer, this.pingBuffer.length);
+            pingingPacket.setPort(CQ_PORT);
+            pingingPacket.setAddress(InetAddress.getByName("255.255.255.255"));
+            pingingPacket.setData(MULTICAST_CQ.getBytes());
+            this.cqMulticastSocket.send(pingingPacket);
             System.out.println("sent CQ...");
             new Thread(new Runnable() {
                 public void run() {
@@ -94,7 +94,7 @@ public class NettyBooFinder {
             new Thread(new Runnable() {
                 public void run() {
                     try {
-                        Thread.sleep(2000);
+                        Thread.sleep(200);
                         killThread = true;
                         System.out.println("murder-suicide thread");
                     } catch (InterruptedException e) {
