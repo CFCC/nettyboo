@@ -1,7 +1,7 @@
 package animation;
 
-import java.awt.Point;
 import java.awt.Color;
+import java.awt.Point;
 import java.util.List;
 
 /**
@@ -11,7 +11,7 @@ import java.util.List;
  * Time: 11:55:12 AM
  */
 public class Sink extends Ball{
-    private static final double T = 200.0;
+    private static final double T = 600.0;
 
     public Sink(Color color, Point speed, Point position) {
         super(color, speed, position,50);
