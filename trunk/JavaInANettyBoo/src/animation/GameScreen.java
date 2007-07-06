@@ -98,9 +98,6 @@ public class GameScreen extends JFrame {
             showIPIfMulticastReceived(g);
 
             for (Ball b : balls) {
-                Point position = b.getPosition();
-                int radius = b.getRadius();
-                Point speed = b.getSpeed();
 
                 int x1;
                 int y1;
@@ -108,6 +105,9 @@ public class GameScreen extends JFrame {
                 // Get new X
                 if (paused == false) {
                     b.prepare(balls);
+                    Point position = b.getPosition();
+                    int radius = b.getRadius();
+                    Point speed = b.getSpeed();
                     if (position.x + speed.x - radius < 0 && speed.x < 0 && !b.isDead()) {
                         x1 = -(position.x + speed.x) + (2 * radius);
                         if (network.isLeftConnected()) {
