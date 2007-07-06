@@ -51,6 +51,7 @@ public class GameScreen extends JFrame {
     private JButton ballButton;
     private JButton soundButton;
     private JButton sinkButton;
+    private JButton pauseButton;
     private Network network;
     private Interaction interaction;
     private ClickMode clickMode;
@@ -59,6 +60,8 @@ public class GameScreen extends JFrame {
     private Cursor handCursor = new Cursor(Cursor.HAND_CURSOR);
 
     private N00bPwner n00bpwner = new N00bPwner(this);
+
+    boolean paused = false;
 
     public List<Ball> getBalls() {
         List<Ball> list = new ArrayList<Ball>();
@@ -104,57 +107,60 @@ public class GameScreen extends JFrame {
                 int y1;
 
                 // Get new X
-                if (position.x + speed.x - radius < 0 && speed.x < 0 && !b.isDead()) {
-                    x1 = -(position.x + speed.x) + (2 * radius);
-                    if (network.isLeftConnected()) {
-                        network.sendToLeftScreen(b);
-                        b.setDead(true);
-                        //screenObjects.remove(b);
-                    } else {
-                        speed.x = -speed.x;
-                    }
-                } else {
-                    int screenWidth = getWidth();
-                    if (position.x + speed.x + radius > screenWidth && speed.x > 0 && !b.isDead()) {
-                        x1 = screenWidth - 2 * radius - (speed.x - (screenWidth - position.x));
-                        if (network.isRightConnected()) {
-                            network.sendToRightScreen(b);
+                if (paused == false) {
+                    if (position.x + speed.x - radius < 0 && speed.x < 0 && !b.isDead()) {
+                        x1 = -(position.x + speed.x) + (2 * radius);
+                        if (network.isLeftConnected()) {
+                            network.sendToLeftScreen(b);
                             b.setDead(true);
                             //screenObjects.remove(b);
                         } else {
                             speed.x = -speed.x;
                         }
-
                     } else {
-                        x1 = position.x + speed.x;
-                    }
+                        int screenWidth = getWidth();
+                        if (position.x + speed.x + radius > screenWidth && speed.x > 0 && !b.isDead()) {
+                            x1 = screenWidth - 2 * radius - (speed.x - (screenWidth - position.x));
+                            if (network.isRightConnected()) {
+                                network.sendToRightScreen(b);
+                                b.setDead(true);
+                                //screenObjects.remove(b);
+                            } else {
+                                speed.x = -speed.x;
+                            }
 
-                }
-                // Get New Y
-                if (position.y + speed.y - radius < 0) {
-                    y1 = -(position.y + speed.y) + (2 * radius);
-                    speed.y = -speed.y;
-                } else {
-                    int screenHeight = getHeight();
-                    if (position.y + speed.y + radius > screenHeight) {
-                        y1 = screenHeight - 2 * radius - (speed.y - (screenHeight - position.y));
+                        } else {
+                            x1 = position.x + speed.x;
+                        }
+
+                    }
+                    // Get New Y
+                    if (position.y + speed.y - radius < 0) {
+                        y1 = -(position.y + speed.y) + (2 * radius);
                         speed.y = -speed.y;
                     } else {
-                        y1 = position.y + speed.y;
+                        int screenHeight = getHeight();
+                        if (position.y + speed.y + radius > screenHeight) {
+                            y1 = screenHeight - 2 * radius - (speed.y - (screenHeight - position.y));
+                            speed.y = -speed.y;
+                        } else {
+                            y1 = position.y + speed.y;
+                        }
                     }
-                }
 
-                // Update position with new values
-                position.x = x1;
-                // position is where the ball is
-                // position.y is where the ball is on the y plane
-                // this line means "change position.y to y1"
-                // change where the ball is on the y plane to y1
-                // move the ball to whatever number y1 is
-                position.y = y1;
+                    // Update position with new values
+                    position.x = x1;
+                    // position is where the ball is
+                    // position.y is where the ball is on the y plane
+                    // this line means "change position.y to y1"
+                    // change where the ball is on the y plane to y1
+                    // move the ball to whatever number y1 is
+                    position.y = y1;
+                }
             }
         }
     };
+
 
     private void showIPIfMulticastReceived(Graphics2D g) {
         if (System.currentTimeMillis() - network.nettyBooFinder.getTimeOfLastMulticastReception() < 8000) {
@@ -162,7 +168,7 @@ public class GameScreen extends JFrame {
             Collection<InetAddress> ips = NettyBooFinder.getLocalIPAddresses();
             if (lastSender != null) {
                 String sender = lastSender.getHostAddress();
-                String prefix = sender.substring(0, sender.lastIndexOf('.')+1);
+                String prefix = sender.substring(0, sender.lastIndexOf('.') + 1);
                 Collection<InetAddress> ipsWithPrefix = findIpsWithPrefix(ips, prefix);
                 if (!ipsWithPrefix.isEmpty()) {
                     ips = ipsWithPrefix;
@@ -174,8 +180,8 @@ public class GameScreen extends JFrame {
 
             g.setFont(font);
             g.setColor(new Color(200, 100, 0, 100));
-            g.drawString(str, (float) ((screen.getWidth() - layout.getBounds().getWidth())/2),
-                    (float) (screen.getHeight()/2 + layout.getBounds().getHeight()/2));
+            g.drawString(str, (float) ((screen.getWidth() - layout.getBounds().getWidth()) / 2),
+                    (float) (screen.getHeight() / 2 + layout.getBounds().getHeight() / 2));
         }
     }
 
@@ -227,7 +233,7 @@ public class GameScreen extends JFrame {
             g.setStroke(new BasicStroke(10));
 
             g.setColor(Color.WHITE);
-            g.drawOval(pos.x - radius+1, pos.y - radius+1, radius*2-2, radius*2-2);
+            g.drawOval(pos.x - radius + 1, pos.y - radius + 1, radius * 2 - 2, radius * 2 - 2);
 
 //            radius += 5;
 //            g.setStroke(new BasicStroke(6));
@@ -288,6 +294,16 @@ public class GameScreen extends JFrame {
         sinkButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 setMode(ClickMode.SINK);
+            }
+        });
+        pauseButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (paused) {
+                    paused = false;
+                }
+                else{
+                    paused = true;
+                }
             }
         });
     }

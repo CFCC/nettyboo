@@ -74,7 +74,7 @@ public class Interaction {
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     list.clear();
                     for (Ball ball : gamescreen.getBalls()) {
-                        if (ball.getPosition().distance(e.getPoint()) <= ball.getRadius()) {
+                        if (ball.getPosition().distance(e.getPoint()) <= ball.getRadius() && ball.isDead()==false) {
                             ball.setSpeed(new Point(0, 0));
                             list.add(ball);
                         }
