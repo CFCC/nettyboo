@@ -12,12 +12,13 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.Timer;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
-import java.awt.Cursor;
+import java.awt.BasicStroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -68,9 +69,9 @@ public class GameScreen extends JFrame {
 
                 g.setColor(b.getColor());
                 g.fillOval(position.x - radius, position.y - radius, radius * 2, radius * 2);
-
-                updateCursor();
+                drawHalo(g, interaction.getCurrentMouseLocation(), b);
             }
+            updateCursor(g);
             n00bpwner.pwn(g);
             for (Ball b : balls) {
                 Point position = b.getPosition();
@@ -133,21 +134,38 @@ public class GameScreen extends JFrame {
         }
     };
 
-    private void updateCursor() {
+    private void updateCursor(Graphics2D g) {
         Point p = interaction.getCurrentMouseLocation();
         if (p == null) {
             this.setCursor(defaultCursor);
             return;
         }
 
+        Cursor cursor = defaultCursor;
         for (Ball ball : getBalls()) {
             if (ball.getPosition().distance(p) < ball.getRadius()) {
-                this.setCursor(handCursor);
-                return;
+                cursor = handCursor;
             }
         }
         // none of the balls are under the cursor
-        this.setCursor(defaultCursor);
+        this.setCursor(cursor);
+    }
+
+    private void drawHalo(Graphics2D g, Point cursorPosition, Ball ball) {
+        int radius = ball.getRadius();
+        Point pos = ball.getPosition();
+        if (pos.distance(cursorPosition) < radius) {
+            radius += 5;
+            g.setStroke(new BasicStroke(10));
+
+            g.setColor(Color.BLACK);
+            g.drawOval(pos.x - radius, pos.y - radius, radius*2, radius*2);
+
+            radius += 5;
+            g.setStroke(new BasicStroke(6));
+            g.setColor(Color.WHITE);
+            g.drawOval(pos.x - radius, pos.y - radius, radius*2, radius*2);
+        }
     }
 
     public GameScreen() {
