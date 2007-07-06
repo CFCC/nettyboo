@@ -71,7 +71,8 @@ public class GameScreen extends JFrame {
                 g.fillOval(position.x - radius, position.y - radius, radius * 2, radius * 2);
                 drawHalo(g, interaction.getCurrentMouseLocation(), b);
             }
-            updateCursor(g);
+            interaction.drawSlingshots(g);
+            updateCursor();
             n00bpwner.pwn(g);
             for (Ball b : balls) {
                 Point position = b.getPosition();
@@ -134,7 +135,7 @@ public class GameScreen extends JFrame {
         }
     };
 
-    private void updateCursor(Graphics2D g) {
+    private void updateCursor() {
         Point p = interaction.getCurrentMouseLocation();
         if (p == null) {
             this.setCursor(defaultCursor);
