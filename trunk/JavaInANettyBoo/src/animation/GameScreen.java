@@ -11,6 +11,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.Timer;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -18,7 +19,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
-import java.awt.BasicStroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -189,11 +189,21 @@ public class GameScreen extends JFrame {
                 JOptionPane.showInternalMessageDialog(getContentPane(),
                         ipSelector);
                 network.connectToServer("left", (String) ipSelector.getSelectedValue());
+                //network.connectToServer("left", JOptionPane.showInternalInputDialog(getContentPane(), "IP address for left computer?"));
             }
         });
         rightComputerLinkButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                network.connectToServer("right", JOptionPane.showInternalInputDialog(getContentPane(), "IP address for right computer?"));
+                DefaultListModel data = new DefaultListModel();
+                JList ipSelector = new JList(data);
+                ipSelector.setSize(300, 300);
+                ipSelector.setMinimumSize(new Dimension(300, 300));
+                ipSelector.setPreferredSize(new Dimension(300, 300));
+                network.nettyBooFinder.findMoreNettyBoos(data);
+                JOptionPane.showInternalMessageDialog(getContentPane(),
+                        ipSelector);
+                network.connectToServer("right", (String) ipSelector.getSelectedValue());
+                //network.connectToServer("right", JOptionPane.showInternalInputDialog(getContentPane(), "IP address for right computer?"));
             }
         });
         setMode(ClickMode.BALL);
