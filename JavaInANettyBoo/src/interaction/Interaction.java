@@ -89,7 +89,7 @@ public class Interaction {
                     if (clickMode == GameScreen.ClickMode.BALL) {
                         gamescreen.addBall(ball);
                     } else if (clickMode == GameScreen.ClickMode.SOUND) {
-                        gamescreen.addBall(new Sounder(Color.yellow, position, downPoint, alg));
+                        gamescreen.addBall(new Sounder(Color.red, position, downPoint, alg));
                     }
                 }
             }
