@@ -22,6 +22,7 @@ public class NettyBooFinder {
     private MulticastSocket cqMulticastSocket;      /* for sending and recieving pings */
     private boolean killThread = false;
     private long timeOfLastMulticastReception;
+    private InetAddress lastMulticastSender;
 
     public NettyBooFinder() {
         try {
@@ -33,7 +34,7 @@ public class NettyBooFinder {
         }
     }
 
-    Set<InetAddress> getLocalIPAddresses() {
+    public static Set<InetAddress> getLocalIPAddresses() {
         Set<InetAddress> ipList = new HashSet<InetAddress>();
         try {
             Enumeration<NetworkInterface> networkInterfaceEnumeration = NetworkInterface.getNetworkInterfaces();
@@ -116,7 +117,8 @@ public class NettyBooFinder {
                         System.out.println("recieved ping: " + packetData);
                         if(packetData.equals(MULTICAST_CQ) && !ipList.contains(listeningPacket.getAddress())) {
                             System.out.println("ping good");
-                            NettyBooFinder.this.timeOfLastMulticastReception = System.currentTimeMillis();
+                            timeOfLastMulticastReception = System.currentTimeMillis();
+                            lastMulticastSender = listeningPacket.getAddress();
                             listeningPacket.setData(CQ_RESPONSE.getBytes());
                             DatagramSocket responseDatagramSocket;
                             responseDatagramSocket = new DatagramSocket();
@@ -134,5 +136,9 @@ public class NettyBooFinder {
 
     public long getTimeOfLastMulticastReception() {
         return timeOfLastMulticastReception;
+    }
+
+    public InetAddress getLastMulticastSender() {
+        return lastMulticastSender;
     }
 }

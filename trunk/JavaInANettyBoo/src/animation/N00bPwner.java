@@ -25,21 +25,25 @@ public class N00bPwner {
             g.setColor(DARK_GRAY);
             g.setFont(font);
             g.drawString(START_PLAYING_STRING,
-                    (float) (gameScreen.screen.getWidth() * .05), gameScreen.screen.getHeight()/2);
+                    (float) (gameScreen.screen.getWidth() * .05), (float) (gameScreen.screen.getHeight()*.75));
         } else {
-            List<Ball> balls = gameScreen.getBalls();
-            for (Ball object : balls) {
-                if (object.getSpeed().distance(0, 0) == 0) {
-                    g.setColor(Color.GRAY);
-                    g.setFont(new Font("blah", Font.BOLD, 20));
-                    Point pos = object.getPosition();
-                    int radius = object.getRadius() - 5;
-                    int tx = pos.x + radius;
-                    int ty = pos.y + radius;
-                    g.drawString("Click and drag to throw", tx, ty);
-                    g.setStroke(new BasicStroke(1));
-                    g.drawLine(tx-8, ty-g.getFont().getSize()/2, pos.x, pos.y);
-                }
+            drawClickAndDragHints(g);
+        }
+    }
+
+    private void drawClickAndDragHints(Graphics2D g) {
+        List<Ball> balls = gameScreen.getBalls();
+        for (Ball object : balls) {
+            if (object.getSpeed().distance(0, 0) == 0) {
+                g.setColor(Color.GRAY);
+                g.setFont(new Font("blah", Font.BOLD, 20));
+                Point pos = object.getPosition();
+                int radius = object.getRadius() - 5;
+                int tx = pos.x + radius;
+                int ty = pos.y + radius;
+                g.drawString("Click and drag to throw", tx, ty);
+                g.setStroke(new BasicStroke(1));
+                g.drawLine(tx-8, ty-g.getFont().getSize()/2, pos.x, pos.y);
             }
         }
     }
