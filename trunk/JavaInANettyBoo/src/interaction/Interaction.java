@@ -46,12 +46,15 @@ public class Interaction {
                                 ball.setText(JOptionPane.showInternalInputDialog(
                                         gamescreen.getContentPane(), "Enter new text for ball:"));
                             } else {
-                                if(ball.getText().equalsIgnoreCase("Poopenheimer")||ball.getText().equalsIgnoreCase("David")){
-                                    JOptionPane.showInternalMessageDialog(gamescreen.getContentPane(),"LOL ^___________________^");
+                                if(ball.getText().equalsIgnoreCase("Poopenheimer")
+                                        ||ball.getText().equalsIgnoreCase("David")){
+                                    JOptionPane.showInternalMessageDialog(gamescreen.getContentPane(),
+                                            "LOL ^___________________^");
                                     break;
                                 }
                                 JOptionPane.showInternalMessageDialog(
-                                        gamescreen.getContentPane(), "The message for this ball is:       " + ball.getText());
+                                        gamescreen.getContentPane(), "The message for this ball is:\n"
+                                        + ball.getText());
                             }
                         }
                     }
