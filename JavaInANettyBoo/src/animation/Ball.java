@@ -1,6 +1,8 @@
 package animation;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Point;
+import java.util.List;
 
 public class Ball extends ScreenObject {
     private Color color;
@@ -46,5 +48,9 @@ public class Ball extends ScreenObject {
 
     public void setRadius(int radius) {
         this.radius = radius;
+    }
+
+    public void prepare(List<Ball> balls) {
+        
     }
 }

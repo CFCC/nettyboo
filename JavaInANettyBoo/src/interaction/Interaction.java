@@ -3,6 +3,8 @@ package interaction;
 import animation.Ball;
 import animation.GameScreen;
 import animation.Sounder;
+import animation.Sink;
+import animation.ScreenObject;
 
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
@@ -22,7 +24,7 @@ import java.util.List;
 public class Interaction {
     private Point downPoint;
     private List<Ball> list = new ArrayList<Ball>();
-    private Ball newBall = null;
+    private ScreenObject newBall = null;
 
     private GameScreen gamescreen;
     private Point currentMouseLocation = new Point(0, 0);
@@ -52,8 +54,8 @@ public class Interaction {
                                 ball.setText(JOptionPane.showInternalInputDialog(
                                         gamescreen.getContentPane(), "Enter new text for ball:"));
                             } else {
-                                if(ball.getText().equalsIgnoreCase("Poopenheimer")
-                                        ||ball.getText().equalsIgnoreCase("David")){
+                                if (ball.getText().equalsIgnoreCase("Poopenheimer")
+                                        || ball.getText().equalsIgnoreCase("David")) {
                                     JOptionPane.showInternalMessageDialog(gamescreen.getContentPane(),
                                             "LOL ^___________________^");
                                     break;
@@ -82,15 +84,22 @@ public class Interaction {
                 if (isRightButton(e)) {
                     Point speed = new Point(0, 0);
                     GameScreen.ClickMode clickMode = gamescreen.getClickMode();
-                    if (clickMode == GameScreen.ClickMode.BALL) {
-                        newBall = new Ball(Color.yellow, speed, downPoint, 1);
-                    } else if (clickMode == GameScreen.ClickMode.SOUND) {
-                        newBall = new Sounder(Color.red, speed, downPoint, 1);
+                    switch (clickMode) {
+                        case BALL:
+                            newBall = new Ball(Color.YELLOW, speed, downPoint, 1);
+                            break;
+                        case SOUND:
+                            newBall = new Sounder(Color.RED, speed, downPoint, 1);
+                            break;
+                        case SINK:
+                            newBall = new Sink(Color.BLUE, speed, downPoint);
+                            break;
                     }
                     gamescreen.addBall(newBall);
                     timer = new Timer(1000 / 30, new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
-                            newBall.setRadius((int) (.1 * (System.currentTimeMillis() - timePress)));
+                            if (newBall instanceof Ball)
+                                ((Ball)newBall).setRadius((int) (.1 * (System.currentTimeMillis() - timePress)));
                         }
                     });
                     timer.start();
@@ -110,7 +119,8 @@ public class Interaction {
                     list.clear();
                 }
                 if (newBall != null && isRightButton(e)) {
-                    newBall.setRadius((int) (.1 * elapsedTime));
+                    if (newBall instanceof Ball)
+                        ((Ball) newBall).setRadius((int) (.1 * elapsedTime));
                     newBall.setSpeed(new Point(xMoved, yMoved));
                     if (timer != null) {
                         timer.stop();
