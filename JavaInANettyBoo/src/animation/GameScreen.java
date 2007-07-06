@@ -17,6 +17,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -35,6 +36,9 @@ public class GameScreen extends JFrame {
     private Network network;
     private Interaction interaction;
     private ClickMode clickMode;
+
+    private Cursor defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
+    private Cursor handCursor = new Cursor(Cursor.HAND_CURSOR);
 
     public List<Ball> getBalls() {
         List<Ball> list = new ArrayList<Ball>();
@@ -62,6 +66,8 @@ public class GameScreen extends JFrame {
 
                 g.setColor(b.getColor());
                 g.fillOval(position.x - radius, position.y - radius, radius * 2, radius * 2);
+
+                updateCursor();
 
                 int x1;
                 int y1;
@@ -116,6 +122,23 @@ public class GameScreen extends JFrame {
             }
         }
     };
+
+    private void updateCursor() {
+        Point p = interaction.getCurrentMouseLocation();
+        if (p == null) {
+            this.setCursor(defaultCursor);
+            return;
+        }
+
+        for (Ball ball : getBalls()) {
+            if (ball.getPosition().distance(p) < ball.getRadius()) {
+                this.setCursor(handCursor);
+                return;
+            }
+        }
+        // none of the balls are under the cursor
+        this.setCursor(defaultCursor);
+    }
 
     public GameScreen() {
         this.network = new Network(this);
