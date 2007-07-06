@@ -20,6 +20,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.font.TextLayout;
@@ -28,6 +29,7 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.TimerTask;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -81,7 +83,8 @@ public class GameScreen extends JFrame {
         protected void paintComponent(Graphics gg) {
             super.paintComponent(gg);
             Graphics2D g = (Graphics2D) gg;
-//            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+            g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
             List<Ball> balls = getBalls();
             for (Ball b : balls) {
                 Point position = b.getPosition();
@@ -93,73 +96,74 @@ public class GameScreen extends JFrame {
             }
 
             interaction.drawSlingshots(g);
-            updateCursor();
             n00bpwner.pwn(g);
             showIPIfMulticastReceived(g);
+        }
+    };
 
-            for (Ball b : balls) {
+    private void animateBalls(List<Ball> balls) {
+        for (Ball b : balls) {
 
-                int x1;
-                int y1;
+            int x1;
+            int y1;
 
-                // Get new X
-                if (paused == false) {
-                    b.prepare(balls);
-                    Point position = b.getPosition();
-                    int radius = b.getRadius();
-                    Point speed = b.getSpeed();
-                    if (position.x + speed.x - radius < 0 && speed.x < 0 && !b.isDead()) {
-                        x1 = -(position.x + speed.x) + (2 * radius);
-                        if (network.isLeftConnected()) {
-                            network.sendToLeftScreen(b);
+            // Get new X
+            if (paused == false) {
+                b.prepare(balls);
+                Point position = b.getPosition();
+                int radius = b.getRadius();
+                Point speed = b.getSpeed();
+                if (position.x + speed.x - radius < 0 && speed.x < 0 && !b.isDead()) {
+                    x1 = -(position.x + speed.x) + (2 * radius);
+                    if (network.isLeftConnected()) {
+                        network.sendToLeftScreen(b);
+                        b.setDead(true);
+                        //screenObjects.remove(b);
+                    } else {
+                        speed.x = -speed.x;
+                    }
+                } else {
+                    int screenWidth = getWidth();
+                    if (position.x + speed.x + radius > screenWidth && speed.x > 0 && !b.isDead()) {
+                        x1 = screenWidth - 2 * radius - (speed.x - (screenWidth - position.x));
+                        if (network.isRightConnected()) {
+                            network.sendToRightScreen(b);
                             b.setDead(true);
                             //screenObjects.remove(b);
                         } else {
                             speed.x = -speed.x;
                         }
+
                     } else {
-                        int screenWidth = getWidth();
-                        if (position.x + speed.x + radius > screenWidth && speed.x > 0 && !b.isDead()) {
-                            x1 = screenWidth - 2 * radius - (speed.x - (screenWidth - position.x));
-                            if (network.isRightConnected()) {
-                                network.sendToRightScreen(b);
-                                b.setDead(true);
-                                //screenObjects.remove(b);
-                            } else {
-                                speed.x = -speed.x;
-                            }
-
-                        } else {
-                            x1 = position.x + speed.x;
-                        }
-
+                        x1 = position.x + speed.x;
                     }
-                    // Get New Y
-                    if (position.y + speed.y - radius < 0) {
-                        y1 = -(position.y + speed.y) + (2 * radius);
+
+                }
+                // Get New Y
+                if (position.y + speed.y - radius < 0) {
+                    y1 = -(position.y + speed.y) + (2 * radius);
+                    speed.y = -speed.y;
+                } else {
+                    int screenHeight = getHeight();
+                    if (position.y + speed.y + radius > screenHeight) {
+                        y1 = screenHeight - 2 * radius - (speed.y - (screenHeight - position.y));
                         speed.y = -speed.y;
                     } else {
-                        int screenHeight = getHeight();
-                        if (position.y + speed.y + radius > screenHeight) {
-                            y1 = screenHeight - 2 * radius - (speed.y - (screenHeight - position.y));
-                            speed.y = -speed.y;
-                        } else {
-                            y1 = position.y + speed.y;
-                        }
+                        y1 = position.y + speed.y;
                     }
-
-                    // Update position with new values
-                    position.x = x1;
-                    // position is where the ball is
-                    // position.y is where the ball is on the y plane
-                    // this line means "change position.y to y1"
-                    // change where the ball is on the y plane to y1
-                    // move the ball to whatever number y1 is
-                    position.y = y1;
                 }
+
+                // Update position with new values
+                position.x = x1;
+                // position is where the ball is
+                // position.y is where the ball is on the y plane
+                // this line means "change position.y to y1"
+                // change where the ball is on the y plane to y1
+                // move the ball to whatever number y1 is
+                position.y = y1;
             }
         }
-    };
+    }
 
 
     private void showIPIfMulticastReceived(Graphics2D g) {
@@ -252,6 +256,13 @@ public class GameScreen extends JFrame {
                 repaint();
             }
         }).start();
+        java.util.Timer timer = new java.util.Timer(false);
+        timer.schedule(new TimerTask() {
+            public void run() {
+                updateCursor();
+                animateBalls(getBalls());
+            }
+        }, 0, 1000/30);
         leftComputerLinkButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 DefaultListModel data = new DefaultListModel();
