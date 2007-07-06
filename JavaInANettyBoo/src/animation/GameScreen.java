@@ -123,7 +123,7 @@ public class GameScreen extends JFrame {
                         speed.x = -speed.x;
                     }
                 } else {
-                    int screenWidth = getWidth();
+                    int screenWidth = screen.getWidth();
                     if (position.x + speed.x + radius > screenWidth && speed.x > 0 && !b.isDead()) {
                         x1 = screenWidth - 2 * radius - (speed.x - (screenWidth - position.x));
                         if (network.isRightConnected()) {
@@ -144,7 +144,7 @@ public class GameScreen extends JFrame {
                     y1 = -(position.y + speed.y) + (2 * radius);
                     speed.y = -speed.y;
                 } else {
-                    int screenHeight = getHeight();
+                    int screenHeight = screen.getHeight();
                     if (position.y + speed.y + radius > screenHeight) {
                         y1 = screenHeight - 2 * radius - (speed.y - (screenHeight - position.y));
                         speed.y = -speed.y;
