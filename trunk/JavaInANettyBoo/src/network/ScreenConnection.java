@@ -21,7 +21,7 @@ class ScreenConnection extends Thread {
     private boolean left;
     private boolean killThread;
     private GameScreen gameScreen;
-    private static final int TCP_PORT = 55209;
+    public static final int TCP_PORT = 55209;
 
     public ScreenConnection(GameScreen gameScreen) {
         this.gameScreen = gameScreen;

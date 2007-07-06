@@ -44,7 +44,7 @@ public class Network {
 
             public void run() {
                 try {
-                    this.serverListeningSocket = new ServerSocket(2000);
+                    this.serverListeningSocket = new ServerSocket(ScreenConnection.TCP_PORT);
                     while(true) {
                         Socket clientSocket = this.serverListeningSocket.accept();
                         ScreenConnection remoteScreen = new ScreenConnection(gameScreen);
