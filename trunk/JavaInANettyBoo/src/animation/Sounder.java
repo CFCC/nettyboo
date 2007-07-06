@@ -8,11 +8,16 @@ import javax.sound.sampled.SourceDataLine;
 import java.awt.Point;
 import java.awt.Color;
 import java.util.Arrays;
+import java.io.ObjectInputStream;
 
 public class Sounder extends Ball {
     public Sounder(Color color, Point speed, Point position, int radius) {
         super(color, speed, position, radius);
 
+        startThread();
+    }
+
+    private void startThread() {
         new Thread(new Runnable() {
             public void run() {
                 byte[] data = new byte[4410];
@@ -32,11 +37,18 @@ public class Sounder extends Ball {
                 }
                 line.start();
                 while (true) {
+                    if (isDead()) {
+                        break;
+                    }
                     fillData(data);
                     line.write(data, 0, data.length);
                 }
             }
         }).start();
+    }
+
+    private void readObject(ObjectInputStream in) {
+        startThread();
     }
 
     private void fillData(byte[] data) {
