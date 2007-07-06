@@ -6,6 +6,11 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Set;
 
 public class NettyBooFinder {
     private static final String MULTICAST_CQ = "JavaInANettyBoo CQ";
@@ -37,6 +42,23 @@ public class NettyBooFinder {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    Set<InetAddress> getLocalIPAddresses() {
+        Set<InetAddress> ipList = new HashSet<InetAddress>();
+        try {
+            Enumeration<NetworkInterface> networkInterfaceEnumeration = NetworkInterface.getNetworkInterfaces();
+            while (networkInterfaceEnumeration.hasMoreElements()) {
+                NetworkInterface networkInterface = networkInterfaceEnumeration.nextElement();
+                Enumeration<InetAddress> inetAddressEnumeration = networkInterface.getInetAddresses();
+                while (inetAddressEnumeration.hasMoreElements()) {
+                    ipList.add(inetAddressEnumeration.nextElement());
+                }
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        return ipList;
     }
 
     public void findMoreNettyBoos(final DefaultListModel data) {
@@ -90,12 +112,13 @@ public class NettyBooFinder {
         new Thread(new Runnable() {
             public void run() {
                 System.out.println("broadcast listener started");
+                Set<InetAddress> ipList = getLocalIPAddresses();
                 try {
                     while(true) {
                         cqMulticastSocket.receive(listeningPacket);
                         String packetData = new String(listeningPacket.getData(), listeningPacket.getOffset(), listeningPacket.getLength());
                         System.out.println("recieved ping: " + packetData);
-                        if(packetData.equals(MULTICAST_CQ)) {
+                        if(packetData.equals(MULTICAST_CQ) && !ipList.contains(listeningPacket.getAddress())) {
                             System.out.println("ping good");
                             listeningPacket.setData(CQ_RESPONSE.getBytes());
                             responseDatagramSocket.connect(listeningPacket.getAddress(), RESPONSE_PORT);
