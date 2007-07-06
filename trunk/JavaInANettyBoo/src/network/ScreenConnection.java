@@ -21,6 +21,7 @@ class ScreenConnection extends Thread {
     private boolean left;
     private boolean killThread;
     private GameScreen gameScreen;
+    private static final int TCP_PORT = 55209;
 
     public ScreenConnection(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
@@ -61,7 +62,7 @@ class ScreenConnection extends Thread {
     boolean attemptServerConnection(String side, String ipAddress) {
         try {
             this.left = side.equalsIgnoreCase("left");
-            this.socket = new Socket(ipAddress, 2000);
+            this.socket = new Socket(ipAddress, TCP_PORT);
             this.serialOutputStream = new ObjectOutputStream(this.socket.getOutputStream());
             this.serialInputStream = new ObjectInputStream(this.socket.getInputStream());
 
