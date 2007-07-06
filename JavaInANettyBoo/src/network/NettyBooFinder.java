@@ -14,8 +14,9 @@ public class NettyBooFinder {
     private static final String CQ_RESPONSE = "I'm here!";
     private static final int RESPONSE_PORT = 12345;
 
-    MulticastSocket cqMulticastSocket;
-    DatagramSocket responseDatagramSocket;
+    MulticastSocket cqMulticastSocket;      /* for sending and recieving pings */
+    DatagramSocket responseDatagramSocket;  /* for sending responses to pings */
+    DatagramSocket responseListeningSocket; /* for recieving resposnes to pings */
     DatagramPacket pingingPacket;
     DatagramPacket listeningPacket;
     byte[] pingBuffer;
@@ -26,7 +27,8 @@ public class NettyBooFinder {
         try {
             this.cqMulticastSocket = new MulticastSocket(CQ_PORT);
             this.cqMulticastSocket.joinGroup(InetAddress.getByName(MULTICAST_GROUP_ADDRESS));
-            this.responseDatagramSocket = new DatagramSocket(RESPONSE_PORT);
+            this.responseDatagramSocket = new DatagramSocket();
+            this.responseListeningSocket = new DatagramSocket(RESPONSE_PORT);
             this.pingBuffer = new byte[1024];
             this.listenBuffer = new byte[1024];
             this.pingingPacket = new DatagramPacket(this.pingBuffer, this.pingBuffer.length);
@@ -39,20 +41,22 @@ public class NettyBooFinder {
 
     public void findMoreNettyBoos(final DefaultListModel data) {
         try {
+            this.pingingPacket.setPort(CQ_PORT);
             this.pingingPacket.setAddress(InetAddress.getByName("255.255.255.255"));
             this.pingingPacket.setData(MULTICAST_CQ.getBytes());
-            System.out.println("sent CQ...");
             this.cqMulticastSocket.send(this.pingingPacket);
+            System.out.println("sent CQ...");
             new Thread(new Runnable() {
                 public void run() {
                     try {
                         /* Listen for responses */
                         System.out.println("listening for pings...");
                         while(true) {
-                            responseDatagramSocket.receive(pingingPacket);
-                            System.out.println("recieved response: " + pingingPacket.getData().toString());
-                            if(pingingPacket.getData().toString().equals(CQ_RESPONSE)) {
-                                data.addElement(pingingPacket.getAddress().toString());
+                            responseListeningSocket.receive(pingingPacket);
+                            String responseString = new String(pingingPacket.getData(), pingingPacket.getOffset(), pingingPacket.getLength());
+                            System.out.println("recieved response: " + responseString);
+                            if(responseString.equals(CQ_RESPONSE)) {
+                                data.addElement(pingingPacket.getAddress().getHostAddress());
                             }
                             if(killThread) {
                                 return;
@@ -85,13 +89,17 @@ public class NettyBooFinder {
         /* start thread to listen for pings and respond to each */
         new Thread(new Runnable() {
             public void run() {
+                System.out.println("broadcast listener started");
                 try {
                     while(true) {
                         cqMulticastSocket.receive(listeningPacket);
-                        System.out.println("recieved ping: " + listeningPacket.getData().toString());
-                        if(listeningPacket.getData().toString().equals(MULTICAST_CQ)) {
+                        String packetData = new String(listeningPacket.getData(), listeningPacket.getOffset(), listeningPacket.getLength());
+                        System.out.println("recieved ping: " + packetData);
+                        if(packetData.equals(MULTICAST_CQ)) {
+                            System.out.println("ping good");
                             listeningPacket.setData(CQ_RESPONSE.getBytes());
-                            responseDatagramSocket.connect(listeningPacket.getSocketAddress());
+                            responseDatagramSocket.connect(listeningPacket.getAddress(), RESPONSE_PORT);
+                            listeningPacket.setPort(RESPONSE_PORT);
                             responseDatagramSocket.send(listeningPacket);
                         }
                     }
