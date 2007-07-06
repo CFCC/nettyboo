@@ -34,25 +34,25 @@ public class Interaction {
             private long timeRelease;
 
             public void mouseClicked(MouseEvent e) {
-                if (e.getButton() == e.BUTTON1 && e.getClickCount() == 2) {
+                if (e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2) {
 
                     for (final Ball ball : gamescreen.getBalls()) {
                         double x = ball.getPosition().getX() - e.getPoint().getX();
                         double y = ball.getPosition().getY() - e.getPoint().getY();
                         double distance = Math.sqrt(x * x + y * y);
                         System.out.println(distance);
-                        if (distance <= ball.getRadius() && ball.getText() == null) {
-                            ball.setText(JOptionPane.showInternalInputDialog(
-                                    gamescreen.getContentPane(), "Enter new text for ball:"));
-                        }
-                        if (ball.getText() != null && distance <= ball.getRadius()) {
-                            if(ball.getText().equalsIgnoreCase("Poopenheimer")||ball.getText().equalsIgnoreCase("David")){
-                                JOptionPane.showInternalMessageDialog(gamescreen.getContentPane(),"LOL ^___________________^");
-                                break;
+                        if (distance <= ball.getRadius()) {
+                            if (ball.getText() == null) {
+                                ball.setText(JOptionPane.showInternalInputDialog(
+                                        gamescreen.getContentPane(), "Enter new text for ball:"));
+                            } else {
+                                if(ball.getText().equalsIgnoreCase("Poopenheimer")||ball.getText().equalsIgnoreCase("David")){
+                                    JOptionPane.showInternalMessageDialog(gamescreen.getContentPane(),"LOL ^___________________^");
+                                    break;
+                                }
+                                JOptionPane.showInternalMessageDialog(
+                                        gamescreen.getContentPane(), "The message for this ball is:       " + ball.getText());
                             }
-                            System.out.println(ball.getText());
-                            JOptionPane.showInternalMessageDialog(
-                                    gamescreen.getContentPane(), "The message for this ball is:       " + ball.getText());
                         }
                     }
                 }
@@ -60,7 +60,7 @@ public class Interaction {
 
             public void mousePressed(MouseEvent e) {
                 timePress = System.currentTimeMillis();
-                if (e.getButton() == e.BUTTON1) {
+                if (e.getButton() == MouseEvent.BUTTON1) {
                     list.clear();
                     for (Ball ball : gamescreen.getBalls()) {
                         double x = ball.getPosition().getX() - e.getPoint().getX();
@@ -82,7 +82,7 @@ public class Interaction {
                 upPoint = e.getPoint();
                 int xMoved = upPoint.x - downPoint.x;
                 int yMoved = upPoint.y - downPoint.y;
-                if (e.getButton() == e.BUTTON1) {
+                if (e.getButton() == MouseEvent.BUTTON1) {
                     for (Ball ball : list) {
                         ball.setSpeed(new Point(xMoved, yMoved));
                     }
