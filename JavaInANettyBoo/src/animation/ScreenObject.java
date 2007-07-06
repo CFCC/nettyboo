@@ -9,7 +9,7 @@ import java.awt.*;
 public class ScreenObject implements Serializable {
     protected Point position;
     protected Point speed;
-    private GameScreen gameScreen;
+    private transient GameScreen gameScreen;
 
     public ScreenObject(Point speed, Point position) {
         this.speed = speed;
