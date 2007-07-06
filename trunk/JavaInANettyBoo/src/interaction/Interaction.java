@@ -5,6 +5,7 @@ import animation.GameScreen;
 import animation.Sounder;
 import animation.Sink;
 import animation.ScreenObject;
+import animation.GravityWell;
 
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
@@ -94,6 +95,10 @@ public class Interaction {
                         case SINK:
                             newBall = new Sink(Color.BLUE, speed, downPoint);
                             break;
+                        case GRAVITY_WELL:
+                            newBall = new GravityWell(Color.GREEN,speed,downPoint);
+                            break;
+                        
                     }
                     gamescreen.addBall(newBall);
                     timer = new Timer(1000 / 30, new ActionListener() {
