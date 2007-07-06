@@ -36,7 +36,7 @@ public class Interaction {
             public void mouseClicked(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2) {
 
-                    for (final Ball ball : gamescreen.getBalls()) {
+                    for (Ball ball : gamescreen.getBalls()) {
                         double x = ball.getPosition().getX() - e.getPoint().getX();
                         double y = ball.getPosition().getY() - e.getPoint().getY();
                         double distance = Math.sqrt(x * x + y * y);
