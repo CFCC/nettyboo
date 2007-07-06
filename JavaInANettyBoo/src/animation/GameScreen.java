@@ -52,6 +52,7 @@ public class GameScreen extends JFrame {
     private JButton soundButton;
     private JButton sinkButton;
     private JButton pauseButton;
+    private JButton gravityWellButton;
     private Network network;
     private Interaction interaction;
     private ClickMode clickMode;
@@ -296,14 +297,14 @@ public class GameScreen extends JFrame {
                 setMode(ClickMode.SINK);
             }
         });
+        gravityWellButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                setMode(ClickMode.GRAVITY_WELL);
+            }
+        });
         pauseButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (paused) {
-                    paused = false;
-                }
-                else{
-                    paused = true;
-                }
+                paused = !paused;
             }
         });
     }
@@ -313,6 +314,7 @@ public class GameScreen extends JFrame {
         ballButton.setSelected(mode == ClickMode.BALL);
         soundButton.setSelected(mode == ClickMode.SOUND);
         sinkButton.setSelected((mode == ClickMode.SINK));
+        gravityWellButton.setSelected((mode == ClickMode.GRAVITY_WELL));
     }
 
     //the list of balls on screen, each ball is assigned a specific number
@@ -346,7 +348,7 @@ public class GameScreen extends JFrame {
     }
 
     public static enum ClickMode {
-        BALL, SINK, SOUND
+        BALL, SINK, GRAVITY_WELL, SOUND
     }
 
 }

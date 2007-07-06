@@ -3,7 +3,7 @@
   <grid id="27dc6" binding="mainPanel" layout-manager="GridLayoutManager" row-count="2" column-count="7" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="767" height="400"/>
+      <xy x="20" y="20" width="624" height="400"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -65,14 +65,25 @@
               <borderPainted value="true"/>
               <icon value="animation/sound.png"/>
               <text value=""/>
-              <toolTipText value="Sound ball"/>
+              <toolTipText value="Sounder"/>
             </properties>
           </component>
           <component id="5c746" class="javax.swing.JButton" binding="sinkButton">
             <constraints/>
             <properties>
+              <horizontalTextPosition value="0"/>
               <icon value="animation/sink.png"/>
               <text value=""/>
+              <toolTipText value="Sink"/>
+            </properties>
+          </component>
+          <component id="dae0e" class="javax.swing.JButton" binding="gravityWellButton">
+            <constraints/>
+            <properties>
+              <horizontalTextPosition value="0"/>
+              <icon value="animation/gravitywell.png"/>
+              <text value=""/>
+              <toolTipText value="Gravity Well"/>
             </properties>
           </component>
         </children>

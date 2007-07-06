@@ -5,7 +5,7 @@ import java.awt.Point;
 import java.util.List;
 
 public class GravityWell extends Ball{
-    private static final double T = 200;
+    private static final double T = 600;
     private int radius = 50;
 
     public GravityWell(Color color, Point speed, Point position) {
@@ -40,3 +40,4 @@ public class GravityWell extends Ball{
         radius = Math.max(Math.min(radius - balls.size(), 300), 50);
     }
 }
+
