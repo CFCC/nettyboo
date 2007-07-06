@@ -37,7 +37,6 @@ public class GravityWell extends Ball{
                 }
             }
         }
-        radius = Math.max(Math.min(radius - 5, 300), 50);
+        radius = Math.max(Math.min(radius - balls.size(), 300), 50);
     }
-}
 }
