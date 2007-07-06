@@ -25,6 +25,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+/**
+ * This class dictates the animation of objects such as what happens when an object hits a
+ * vertical wall when another computer is or is not present. When another computer is present,
+ * it will pass the object to it, and when another computer isn't present, it will simply make
+ * object bounce. When an object moves, it either glides accross the screen with or without
+ * sound, depending on the object. This class works directly with other classes within the
+ * JavaInANettyBoo project.
+ *
+ * @author Colin C. Gerwitz
+ */
 public class GameScreen extends JFrame {
     private List<ScreenObject> screenObjects = new CopyOnWriteArrayList<ScreenObject>();
     private JButton leftComputerLinkButton;
