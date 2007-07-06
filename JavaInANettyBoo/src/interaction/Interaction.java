@@ -5,12 +5,15 @@ import animation.GameScreen;
 import animation.Sounder;
 
 import javax.swing.JOptionPane;
+import javax.swing.Timer;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,16 +35,14 @@ public class Interaction {
             private List<Ball> list = new ArrayList<Ball>();
             private long timePress;
             private long timeRelease;
+            public Ball newBall = null;
+            private Timer timer;
 
             public void mouseClicked(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2) {
 
                     for (Ball ball : gamescreen.getBalls()) {
-                        double x = ball.getPosition().getX() - e.getPoint().getX();
-                        double y = ball.getPosition().getY() - e.getPoint().getY();
-                        double distance = Math.sqrt(x * x + y * y);
-                        System.out.println(distance);
-                        if (distance <= ball.getRadius()) {
+                        if (ball.getPosition().distance(e.getPoint()) <= ball.getRadius()) {
                             if (ball.getText() == null) {
                                 ball.setText(JOptionPane.showInternalInputDialog(
                                         gamescreen.getContentPane(), "Enter new text for ball:"));
@@ -66,17 +67,29 @@ public class Interaction {
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     list.clear();
                     for (Ball ball : gamescreen.getBalls()) {
-                        double x = ball.getPosition().getX() - e.getPoint().getX();
-                        double y = ball.getPosition().getY() - e.getPoint().getY();
-                        double distance = Math.sqrt(x * x + y * y);
-                        System.out.println(distance);
-                        if (distance <= ball.getRadius()) {
+                        if (ball.getPosition().distance(e.getPoint()) <= ball.getRadius()) {
                             ball.setSpeed(new Point(0, 0));
                             list.add(ball);
                         }
                     }
                 }
                 downPoint = e.getPoint();
+                if (isRightButton(e)) {
+                    Point speed = new Point(0, 0);
+                    GameScreen.ClickMode clickMode = gamescreen.getClickMode();
+                    if (clickMode == GameScreen.ClickMode.BALL) {
+                        newBall = new Ball(Color.yellow, speed, downPoint, 1);
+                    } else if (clickMode == GameScreen.ClickMode.SOUND) {
+                        newBall = new Sounder(Color.red, speed, downPoint, 1);
+                    }
+                    gamescreen.addBall(newBall);
+                    timer = new Timer(1000 / 30, new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            newBall.setRadius((int) (.1 * (System.currentTimeMillis() - timePress)));
+                        }
+                    });
+                    timer.start();
+                }
             }
 
             public void mouseReleased(MouseEvent e) {
@@ -90,20 +103,21 @@ public class Interaction {
                         ball.setSpeed(new Point(xMoved, yMoved));
                     }
                 }
-                if (e.getButton() == MouseEvent.BUTTON3 || (e.getModifiers() & KeyEvent.CTRL_MASK) != 0) {
-                    int alg = (int) (.1 * elapsedTime);
-                    System.out.println(alg);
-                    Point position = new Point(xMoved, yMoved);
-                    Ball ball = new Ball(Color.yellow, position, downPoint, alg);
-                    GameScreen.ClickMode clickMode = gamescreen.getClickMode();
-                    if (clickMode == GameScreen.ClickMode.BALL) {
-                        gamescreen.addBall(ball);
-                    } else if (clickMode == GameScreen.ClickMode.SOUND) {
-                        gamescreen.addBall(new Sounder(Color.red, position, downPoint, alg));
+                if (newBall != null && isRightButton(e)) {
+                    newBall.setRadius((int) (.1 * elapsedTime));
+                    newBall.setSpeed(new Point(xMoved, yMoved));
+                    if (timer != null) {
+                        timer.stop();
+                        timer = null;
                     }
+                    newBall = null;
                 }
             }
         });
+    }
+
+    private boolean isRightButton(MouseEvent e) {
+        return e.getButton() == MouseEvent.BUTTON3 || (e.getModifiers() & KeyEvent.CTRL_MASK) != 0;
     }
 
     public Point getCurrentMouseLocation() {
