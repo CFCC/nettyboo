@@ -293,6 +293,7 @@ public class GameScreen extends JFrame {
         this.clickMode = mode;
         ballButton.setSelected(mode == ClickMode.BALL);
         soundButton.setSelected(mode == ClickMode.SOUND);
+        sinkButton.setSelected((mode == ClickMode.SINK));
     }
 
     //the list of balls on screen, each ball is assigned a specific number
