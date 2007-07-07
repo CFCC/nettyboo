@@ -184,7 +184,7 @@ public class GameScreen extends JFrame {
             TextLayout layout = new TextLayout(str, font, g.getFontRenderContext());
 
             g.setFont(font);
-            g.setColor(new Color(200, 100, 0, 175));
+            g.setColor(new Color(200, 100, 0));
             g.drawString(str, (float) ((screen.getWidth() - layout.getBounds().getWidth()) / 2),
                     (float) (screen.getHeight() / 2 + layout.getBounds().getHeight() / 2));
         }
