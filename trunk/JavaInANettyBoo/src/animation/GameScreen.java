@@ -109,22 +109,25 @@ public class GameScreen extends JFrame {
 
     private void animateBalls(List<Ball> balls) {
         for (Ball b : balls) {
-
             int x1;
             int y1;
 
             // Get new X
-            if (paused == false) {
+            if (!paused) {
                 b.prepare(balls);
                 Point position = b.getPosition();
                 int radius = b.getRadius();
                 Point speed = b.getSpeed();
+
+                if (position.x - radius < -getWidth() || position.x > 2 * getWidth() + radius){
+                    screenObjects.remove(b);
+                    continue;
+                }
                 if (position.x + speed.x - radius < 0 && speed.x < 0 && !b.isDead()) {
                     x1 = -(position.x + speed.x) + (2 * radius);
                     if (network.isLeftConnected()) {
                         network.sendToLeftScreen(b);
                         b.setDead(true);
-                        //screenObjects.remove(b);
                     } else {
                         speed.x = -speed.x;
                     }
@@ -135,15 +138,12 @@ public class GameScreen extends JFrame {
                         if (network.isRightConnected()) {
                             network.sendToRightScreen(b);
                             b.setDead(true);
-                            //screenObjects.remove(b);
                         } else {
                             speed.x = -speed.x;
                         }
-
                     } else {
                         x1 = position.x + speed.x;
                     }
-
                 }
                 // Get New Y
                 if (position.y + speed.y - radius < 0) {
@@ -161,11 +161,6 @@ public class GameScreen extends JFrame {
 
                 // Update position with new values
                 position.x = x1;
-                // position is where the ball is
-                // position.y is where the ball is on the y plane
-                // this line means "change position.y to y1"
-                // change where the ball is on the y plane to y1
-                // move the ball to whatever number y1 is
                 position.y = y1;
             }
         }
@@ -368,13 +363,13 @@ public class GameScreen extends JFrame {
     }
 
     public void addBallFromLeft(Ball recievedBall) {
-        recievedBall.getPosition().x = 0;
+        recievedBall.getPosition().x = -recievedBall.getRadius();
         addBall(recievedBall);
 
     }
 
     public void addBallFromRight(Ball recievedBall) {
-        recievedBall.getPosition().x = getWidth();
+        recievedBall.getPosition().x = getWidth() + recievedBall.getRadius();
         addBall(recievedBall);
     }
 
