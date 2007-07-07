@@ -87,8 +87,8 @@ public class GameScreen extends JFrame {
         protected void paintComponent(Graphics gg) {
             super.paintComponent(gg);
             Graphics2D g = (Graphics2D) gg;
-            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-            g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
             List<Ball> balls = getBalls();
             Collections.sort(balls, new Comparator<Ball>() {
                 public int compare(Ball o1, Ball o2) {
