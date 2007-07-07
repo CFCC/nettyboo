@@ -9,7 +9,8 @@ public class Ball extends ScreenObject {
     private int radius;
 
     private String text;
-    private boolean dead;
+    private boolean created = false;
+    private boolean dead = false;
 
     public Ball(Color color, Point speed, Point position, int radius) {
         super(speed, position);
@@ -52,5 +53,17 @@ public class Ball extends ScreenObject {
 
     public void prepare(List<Ball> balls) {
         
+    }
+
+    public boolean wasCreated() {
+        return created;
+    }
+
+    public void setCreated() {
+        this.created = true;
+    }
+
+    public boolean isAlive() {
+        return wasCreated() && !isDead();
     }
 }
