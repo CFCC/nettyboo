@@ -39,9 +39,9 @@ public class N00bPwner {
                     g.setColor(Color.GRAY);
                     g.setFont(new Font("blah", Font.BOLD, 20));
                     Point pos = object.getPosition();
-                    int radius = object.getRadius() - 5;
-                    int tx = pos.x + radius;
-                    int ty = pos.y + radius;
+                    double radius = object.getRadius() - 5;
+                    int tx = (int) (pos.x + radius);
+                    int ty = (int) (pos.y + radius);
                     g.drawString("Click and drag to throw", tx, ty);
                     g.setStroke(new BasicStroke(1));
                     g.drawLine(tx-8, ty-g.getFont().getSize()/2, pos.x, pos.y);
