@@ -18,9 +18,10 @@ public class GravityWell extends Ball{
     }
 
     public void prepare(List<Ball> balls) {
+        if (!wasCreated()) return;
 
         for (Ball b : balls) {
-            if (b == this || b instanceof Sink || b.isDead()) continue;
+            if (b == this || b instanceof Sink || !b.isAlive()) continue;
             Point p = b.getPosition();
             double d = position.distance(p);
             /*if (d < T / 2){

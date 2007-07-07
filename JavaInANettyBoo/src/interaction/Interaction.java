@@ -2,10 +2,10 @@ package interaction;
 
 import animation.Ball;
 import animation.GameScreen;
-import animation.Sounder;
-import animation.Sink;
-import animation.ScreenObject;
 import animation.GravityWell;
+import animation.ScreenObject;
+import animation.Sink;
+import animation.Sounder;
 
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
@@ -93,7 +93,7 @@ public class Interaction {
                             newBall = new Sounder(Color.RED, speed, downPoint, 1);
                             break;
                         case SINK:
-                            newBall = new Sink(Color.BLUE, speed, downPoint);
+                            newBall = new Sink(Color.BLUE, speed, downPoint, 1);
                             break;
                         case GRAVITY_WELL:
                             newBall = new GravityWell(Color.GREEN,speed,downPoint);
@@ -103,8 +103,9 @@ public class Interaction {
                     gamescreen.addBall(newBall);
                     timer = new Timer(1000 / 30, new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
-                            if (newBall instanceof Ball)
-                                ((Ball)newBall).setRadius((int) (.1 * (System.currentTimeMillis() - timePress)));
+                            if (newBall instanceof Ball) {
+                                ((Ball) newBall).setRadius((int) (.1 * (System.currentTimeMillis() - timePress)));
+                            }
                         }
                     });
                     timer.start();
@@ -124,8 +125,11 @@ public class Interaction {
                     list.clear();
                 }
                 if (newBall != null && isRightButton(e)) {
-                    if (newBall instanceof Ball)
-                        ((Ball) newBall).setRadius((int) (.1 * elapsedTime));
+                    if (newBall instanceof Ball) {
+                        Ball ball = (Ball) newBall;
+                        ball.setRadius((int) (.1 * elapsedTime));
+                        ball.setCreated();
+                    }
                     newBall.setSpeed(new Point(xMoved, yMoved));
                     if (timer != null) {
                         timer.stop();

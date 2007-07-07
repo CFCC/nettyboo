@@ -28,6 +28,8 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -88,6 +90,11 @@ public class GameScreen extends JFrame {
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
             g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
             List<Ball> balls = getBalls();
+            Collections.sort(balls, new Comparator<Ball>() {
+                public int compare(Ball o1, Ball o2) {
+                    return o1.getRadius() > o2.getRadius() ? -1 : o1.getRadius() < o2.getRadius() ? 1 : 0;
+                }
+            });
             for (Ball b : balls) {
                 Point position = b.getPosition();
                 int radius = b.getRadius();
@@ -375,6 +382,10 @@ public class GameScreen extends JFrame {
 
     public ClickMode getClickMode() {
         return clickMode;
+    }
+
+    public void removeBall(ScreenObject object) {
+        screenObjects.remove(object);
     }
 
     public static enum ClickMode {
