@@ -88,7 +88,7 @@ public class GameScreen extends JFrame {
             super.paintComponent(gg);
             Graphics2D g = (Graphics2D) gg;
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-            g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
             List<Ball> balls = getBalls();
             Collections.sort(balls, new Comparator<Ball>() {
                 public int compare(Ball o1, Ball o2) {
@@ -127,7 +127,7 @@ public class GameScreen extends JFrame {
                 double radius = b.getRadius();
                 Point speed = b.getSpeed();
 
-                if (position.x - radius < -getWidth() || position.x > 2 * getWidth() + radius){
+                if (position.x - radius < 0 || position.x > getWidth() + radius){
                     screenObjects.remove(b);
                     continue;
                 }

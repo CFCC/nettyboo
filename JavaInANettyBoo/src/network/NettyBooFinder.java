@@ -88,7 +88,7 @@ public class NettyBooFinder {
             new Thread(new Runnable() {
                 public void run() {
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(2000);
                         killThread = true;
                         System.out.println("murder-suicide thread");
                     } catch (InterruptedException e) {
