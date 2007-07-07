@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Ball extends ScreenObject {
     private Color color;
-    private int radius;
+    private double radius;
 
     private String text;
     private boolean created = false;
@@ -27,7 +27,7 @@ public class Ball extends ScreenObject {
         this.dead = dead;
     }
 
-    public int getRadius() {
+    public double getRadius() {
         return radius;
     }
 
@@ -47,7 +47,7 @@ public class Ball extends ScreenObject {
         this.color = color;
     }
 
-    public void setRadius(int radius) {
+    public void setRadius(double radius) {
         this.radius = radius;
     }
 

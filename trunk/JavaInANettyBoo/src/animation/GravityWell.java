@@ -6,15 +6,13 @@ import java.util.List;
 
 public class GravityWell extends Ball{
     private static final double T = 600;
-    private int radius = 50;
 
     public GravityWell(Color color, Point speed, Point position) {
         super(color, speed, position, 50);
-
     }
 
-    public int getRadius() {
-        return radius;
+    public void setRadius(double radius) {
+        // radius cannot be set
     }
 
     public void prepare(List<Ball> balls) {
@@ -33,12 +31,8 @@ public class GravityWell extends Ball{
                 int dy = (position.y - p.y) / 100;
                 b.speed.x += dx;/// (T - (d/T) * 20.0));
                 b.speed.y += dy;// / (T - (d/T) * 20.0 ));
-                if (dx != 0 || dy != 0) {
-                    radius++;
-                }
             }
         }
-        radius = Math.max(Math.min(radius - balls.size(), 300), 50);
     }
 }
 

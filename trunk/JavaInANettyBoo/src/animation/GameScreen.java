@@ -97,10 +97,11 @@ public class GameScreen extends JFrame {
             });
             for (Ball b : balls) {
                 Point position = b.getPosition();
-                int radius = b.getRadius();
+                double radius = b.getRadius();
 
                 g.setColor(b.getColor());
-                g.fillOval(position.x - radius, position.y - radius, radius * 2, radius * 2);
+                g.fillOval((int) (position.x - radius), (int) (position.y - radius),
+                        (int) radius * 2, (int) radius * 2);
                 drawHalo(g, interaction.getCurrentMouseLocation(), b);
             }
 
@@ -116,14 +117,14 @@ public class GameScreen extends JFrame {
 
     private void animateBalls(List<Ball> balls) {
         for (Ball b : balls) {
-            int x1;
-            int y1;
+            double x1;
+            double y1;
 
             // Get new X
             if (!paused) {
                 b.prepare(balls);
                 Point position = b.getPosition();
-                int radius = b.getRadius();
+                double radius = b.getRadius();
                 Point speed = b.getSpeed();
 
                 if (position.x - radius < -getWidth() || position.x > 2 * getWidth() + radius){
@@ -167,8 +168,8 @@ public class GameScreen extends JFrame {
                 }
 
                 // Update position with new values
-                position.x = x1;
-                position.y = y1;
+                position.x = (int) x1;
+                position.y = (int) y1;
             }
         }
     }
@@ -238,14 +239,15 @@ public class GameScreen extends JFrame {
     }
 
     private void drawHalo(Graphics2D g, Point cursorPosition, Ball ball) {
-        int radius = ball.getRadius();
+        double radius = ball.getRadius();
         Point pos = ball.getPosition();
         if (pos.distance(cursorPosition) < radius) {
             radius += 5;
             g.setStroke(new BasicStroke(10));
 
             g.setColor(Color.WHITE);
-            g.drawOval(pos.x - radius + 1, pos.y - radius + 1, radius * 2 - 2, radius * 2 - 2);
+            g.drawOval((int) (pos.x - radius + 1), (int) (pos.y - radius + 1),
+                    (int) (radius * 2 - 2), (int) (radius * 2 - 2));
 
 //            radius += 5;
 //            g.setStroke(new BasicStroke(6));
@@ -370,13 +372,13 @@ public class GameScreen extends JFrame {
     }
 
     public void addBallFromLeft(Ball recievedBall) {
-        recievedBall.getPosition().x = -recievedBall.getRadius();
+        recievedBall.getPosition().x = (int) -recievedBall.getRadius();
         addBall(recievedBall);
 
     }
 
     public void addBallFromRight(Ball recievedBall) {
-        recievedBall.getPosition().x = getWidth() + recievedBall.getRadius();
+        recievedBall.getPosition().x = (int) (getWidth() + recievedBall.getRadius());
         addBall(recievedBall);
     }
 

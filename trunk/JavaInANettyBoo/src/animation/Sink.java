@@ -15,24 +15,34 @@ public class Sink extends Ball {
             if (b == this || b instanceof Sink || !b.isAlive()) continue;
             Point p = b.getPosition();
             double distance = position.distance(p);
-            if (distance - b.getRadius() < Math.max(50, getRadius())){
+            double ballRadius = b.getRadius();
+            double myRadius = getRadius();
+            if (distance - ballRadius < Math.max(50, myRadius)){
                 b.speed.x = (position.x - p.x)/20;/// (T - (distance/T) * 20.0));
                 b.speed.y = (position.y - p.y)/20;// / (T - (distance/T) * 20.0 ));
                 if (b.speed.x == 0 && b.speed.y == 0) {
-                    int newRadius;
-                    if (b.getRadius() <= 0) {
+                    if (ballRadius <= 0) {
                         getGameScreen().removeBall(b);
-                        newRadius = getRadius() - (3+b.getRadius()/10);
                     } else {
-                        b.setRadius(b.getRadius()-1);
-                        newRadius = getRadius() - 1;
-                    }
-                    setRadius(newRadius);
-                    if (newRadius < 0) {
-                        getGameScreen().removeBall(this);
+                        double ballArea = area(ballRadius);
+                        double newBallRadius = ballRadius - 1;
+                        double newBallArea = area(newBallRadius);
+                        double diffArea = ballArea - newBallArea;
+                        double myArea = area(myRadius);
+                        double newArea = myArea - diffArea;
+                        b.setRadius(newBallRadius);
+                        double myNewRadius = Math.sqrt(newArea / Math.PI);
+                        setRadius(Math.min(myRadius-1, myNewRadius));
+                        if (myNewRadius < 0) {
+                            getGameScreen().removeBall(this);
+                        }
                     }
                 }
             }
         }
+    }
+
+    private double area(double radius) {
+        return Math.PI * radius * radius;
     }
 }
