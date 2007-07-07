@@ -29,7 +29,6 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.TimerTask;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -65,6 +64,9 @@ public class GameScreen extends JFrame {
 
     boolean paused = false;
 
+    private final Object renderedLock = new Object();
+    private boolean rendered = false;
+
     public List<Ball> getBalls() {
         List<Ball> list = new ArrayList<Ball>();
         for (ScreenObject ball : screenObjects) {
@@ -98,6 +100,10 @@ public class GameScreen extends JFrame {
             interaction.drawSlingshots(g);
             n00bpwner.pwn(g);
             showIPIfMulticastReceived(g);
+            synchronized(renderedLock) {
+                rendered = true;
+                renderedLock.notifyAll();
+            }
         }
     };
 
@@ -256,13 +262,19 @@ public class GameScreen extends JFrame {
                 repaint();
             }
         }).start();
-        java.util.Timer timer = new java.util.Timer(false);
-        timer.schedule(new TimerTask() {
+//        java.util.Timer timer = new java.util.Timer(false);
+//        timer.schedule(new TimerTask() {
+        Thread animationThread = new Thread(new Runnable() {
             public void run() {
-                updateCursor();
-                animateBalls(getBalls());
+                while (true) {
+                    waitForNextRender();
+                    updateCursor();
+                    animateBalls(getBalls());
+                }
             }
-        }, 0, 1000/30);
+        });
+        animationThread.setPriority(Thread.MIN_PRIORITY);
+        animationThread.start();
         leftComputerLinkButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 DefaultListModel data = new DefaultListModel();
@@ -317,6 +329,19 @@ public class GameScreen extends JFrame {
                 paused = !paused;
             }
         });
+    }
+
+    private void waitForNextRender() {
+        synchronized(renderedLock) {
+            while (!rendered) {
+                try {
+                    renderedLock.wait();
+                } catch (InterruptedException e) {
+                    break;
+                }
+            }
+            rendered = false;
+        }
     }
 
     private void setMode(ClickMode mode) {
