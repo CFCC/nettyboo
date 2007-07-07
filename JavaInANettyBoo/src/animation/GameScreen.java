@@ -127,7 +127,7 @@ public class GameScreen extends JFrame {
                 double radius = b.getRadius();
                 Point speed = b.getSpeed();
 
-                if (position.x + 2 * radius < 0 || position.x > getWidth() + radius){
+                if (position.x + 3 * radius < 0 || position.x > getWidth() + radius){
                     screenObjects.remove(b);
                     continue;
                 }
