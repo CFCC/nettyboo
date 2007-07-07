@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.awt.Point;
 import java.util.List;
 
-public class GravityWell extends Ball{
+public class GravityWell extends Ball {
     private static final double T = 600;
 
     public GravityWell(Color color, Point speed, Point position) {

@@ -48,7 +48,7 @@ public class Ball extends ScreenObject {
     }
 
     public void setRadius(double radius) {
-        this.radius = radius;
+        this.radius = Math.min(radius,500);
     }
 
     public void prepare(List<Ball> balls) {
