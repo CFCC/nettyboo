@@ -3,12 +3,8 @@ package animation;
 import java.awt.Color;
 import java.awt.Point;
 import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
 
 public class Sink extends Ball {
-    private Map<Ball, Object> ate = new WeakHashMap<Ball,Object>();
-
     public Sink(Color color, Point speed, Point position, int radius) {
         super(color, speed, position, radius);
     }
