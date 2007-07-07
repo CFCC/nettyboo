@@ -20,7 +20,7 @@ public class Sink extends Ball {
             if (b == this || b instanceof Sink || !b.isAlive()) continue;
             Point p = b.getPosition();
             double distance = position.distance(p);
-            if (distance < SINK_RANGE / 2){
+            if (distance < getRadius()){
                 b.speed.x = (position.x - p.x)/20;/// (T - (distance/T) * 20.0));
                 b.speed.y = (position.y - p.y)/20;// / (T - (distance/T) * 20.0 ));
                 if (b.speed.x == 0 && b.speed.y == 0) {
