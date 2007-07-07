@@ -72,7 +72,7 @@ public class NettyBooFinder {
                             String responseString = new String(pingingPacket.getData(), pingingPacket.getOffset(), pingingPacket.getLength());
                             System.out.println("recieved response: " + responseString);
                             if(responseString.equals(CQ_RESPONSE)) {
-                                data.addElement(pingingPacket.getAddress());
+                                data.addElement(pingingPacket.getAddress().toString());
                             }
                             if(killThread) {
                                 break;
