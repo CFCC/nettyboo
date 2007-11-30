@@ -1,8 +1,0 @@
-#summary Summery of project
-
-=Balls=
-
- * Text (Yellow) Ball: Send a message
- * Sound (Red): Makes sound in stereo at a frequency of its speed and a volume of its size
- * Gravity (Green): Effects the speed of balls around itself
- * Sink (Blue): Slowly eats other balls
