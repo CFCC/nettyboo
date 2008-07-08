@@ -21,12 +21,14 @@ public class N00bPwner {
     public void pwn(Graphics2D g) {
         List<ScreenObject> objects = gameScreen.getScreenObjects();
         if (objects.isEmpty()) {
-            Font font = findLargestFont(g, START_PLAYING_STRING, (int) (gameScreen.screen.getWidth() * .9));
+			Font oldFont = g.getFont();
+			Font font = findLargestFont(g, START_PLAYING_STRING, (int) (gameScreen.screen.getWidth() * .9));
             g.setColor(DARK_GRAY);
             g.setFont(font);
             g.drawString(START_PLAYING_STRING,
                     (float) (gameScreen.screen.getWidth() * .05), (float) (gameScreen.screen.getHeight()*.75));
-        } else {
+			g.setFont(oldFont);
+		} else {
             drawClickAndDragHints(g);
         }
     }

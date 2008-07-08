@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.awt.Point;
 import java.util.List;
 
-public class Sink extends Ball {
+public class Sink extends GenericBall {
     public Sink(Color color, Point speed, Point position, int radius) {
         super(color, speed, position, radius);
     }
