@@ -10,7 +10,7 @@ import java.awt.Color;
 import java.util.Arrays;
 import java.io.ObjectInputStream;
 
-public class Sounder extends Ball {
+public class Sounder extends GenericBall {
     public Sounder(Color color, Point speed, Point position, int radius) {
         super(color, speed, position, radius);
 
@@ -52,7 +52,7 @@ public class Sounder extends Ball {
     }
 
     private void fillData(byte[] data) {
-        double speedMax300 = Math.min(300, getSpeed().distance(0, 0));
+        double speedMax300 =Math.min(10000, getSpeed().distance(0, 0));
         if (speedMax300 == 0) {
             Arrays.fill(data, (byte) 0);
             return;

@@ -1,22 +1,26 @@
 package animation;
 
-import java.awt.Color;
 import java.awt.Point;
+import java.awt.Graphics2D;
 import java.util.List;
 
-public class Ball extends ScreenObject {
-    private Color color;
-    private double radius;
-
-    private String text;
+/**
+ * Created by IntelliJ IDEA.
+ * User: Zak
+ * Date: Jul 1, 2008
+ * Time: 11:16:15 AM
+ * To change this template use File | Settings | File Templates.
+ */
+public abstract class Ball extends ScreenObject {
+    protected String text;
     private boolean created = false;
     private boolean dead = false;
+    protected double radius;
 
-    public Ball(Color color, Point speed, Point position, int radius) {
+    public Ball(Point speed, Point position, int radius) {
         super(speed, position);
-        this.color = color;
+        text = null;
         this.radius = radius;
-        this.text = null;
     }
 
     public boolean isDead() {
@@ -27,10 +31,6 @@ public class Ball extends ScreenObject {
         this.dead = dead;
     }
 
-    public double getRadius() {
-        return radius;
-    }
-
     public String getText() {
         return text;
     }
@@ -39,20 +39,8 @@ public class Ball extends ScreenObject {
         this.text = text;
     }
 
-    public Color getColor() {
-        return color;
-    }
-
-    public void setColor(Color color) {
-        this.color = color;
-    }
-
-    public void setRadius(double radius) {
-        this.radius = Math.min(radius,500);
-    }
-
     public void prepare(List<Ball> balls) {
-        
+
     }
 
     public boolean wasCreated() {
@@ -66,4 +54,17 @@ public class Ball extends ScreenObject {
     public boolean isAlive() {
         return wasCreated() && !isDead();
     }
+
+    public double getRadius() {
+        return radius;
+    }
+
+    public void setRadius(double radius) {
+        this.radius = Math.min(radius,500);
+    }
+
+    public abstract void  paintBall(Graphics2D g);
+
+	public abstract boolean doesBounce();
+
 }

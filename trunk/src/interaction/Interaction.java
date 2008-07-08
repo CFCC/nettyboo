@@ -6,6 +6,8 @@ import animation.GravityWell;
 import animation.ScreenObject;
 import animation.Sink;
 import animation.Sounder;
+import animation.GenericBall;
+import animation.Plane;
 
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
@@ -67,15 +69,19 @@ public class Interaction {
                             }
                         }
                     }
-                }
-            }
+				} else if (e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 1){
+					gamescreen.getConnectionHinter().mouseClicked(e.getPoint());
+				}
+
+
+			}
 
             public void mousePressed(MouseEvent e) {
                 timePress = System.currentTimeMillis();
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     list.clear();
                     for (Ball ball : gamescreen.getBalls()) {
-                        if (ball.getPosition().distance(e.getPoint()) <= ball.getRadius() && ball.isDead()==false) {
+                        if (ball.getPosition().distance(e.getPoint()) <= ball.getRadius() && !ball.isDead()) {
                             ball.setSpeed(new Point(0, 0));
                             list.add(ball);
                         }
@@ -87,7 +93,7 @@ public class Interaction {
                     GameScreen.ClickMode clickMode = gamescreen.getClickMode();
                     switch (clickMode) {
                         case BALL:
-                            newBall = new Ball(Color.YELLOW, speed, downPoint, 1);
+                            newBall = new GenericBall(Color.YELLOW, speed, downPoint, 1);
                             break;
                         case SOUND:
                             newBall = new Sounder(Color.RED, speed, downPoint, 1);
@@ -98,13 +104,15 @@ public class Interaction {
                         case GRAVITY_WELL:
                             newBall = new GravityWell(Color.GREEN,speed,downPoint);
                             break;
-                        
+                        case PLANE:
+                            newBall = new Plane(speed,downPoint);
+
                     }
                     gamescreen.addBall(newBall);
                     timer = new Timer(1000 / 30, new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
-                            if (newBall instanceof Ball) {
-                                ((Ball) newBall).setRadius((int) (.1 * (System.currentTimeMillis() - timePress)));
+                            if (newBall instanceof GenericBall) {
+                                ((GenericBall) newBall).setRadius((int) (.1 * (System.currentTimeMillis() - timePress)));
                             }
                         }
                     });
@@ -125,8 +133,8 @@ public class Interaction {
                     list.clear();
                 }
                 if (newBall != null && isRightButton(e)) {
-                    if (newBall instanceof Ball) {
-                        Ball ball = (Ball) newBall;
+                    if (newBall instanceof GenericBall) {
+                        GenericBall ball = (GenericBall) newBall;
                         ball.setRadius((int) (.1 * elapsedTime));
                         ball.setCreated();
                     }
