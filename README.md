@@ -1,4 +1,5 @@
 # Nettyboo
+![alt tag](https://raw.githubusercontent.com/CFCC/nettyboo/master/screenshots/singleplayer.png)
 
 Combine your LAN-mates' computers into a mega-screen and shoot balls at each other.
 
